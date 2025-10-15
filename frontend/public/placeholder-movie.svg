@@ -1,0 +1,30 @@
+<!-- Placeholder SVG para películas sin imagen -->
+<svg width="300" height="400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8f9fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e9ecef;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Fondo -->
+  <rect width="300" height="400" fill="url(#grad)" stroke="#dee2e6" stroke-width="2"/>
+  
+  <!-- Icono de película -->
+  <g transform="translate(150, 180)">
+    <circle cx="0" cy="0" r="40" fill="#6c757d" opacity="0.3"/>
+    <path d="M-20 -15 L20 -15 L20 15 L-20 15 Z" fill="#6c757d"/>
+    <circle cx="-10" cy="-5" r="3" fill="#ffffff"/>
+    <circle cx="10" cy="-5" r="3" fill="#ffffff"/>
+    <circle cx="-10" cy="5" r="3" fill="#ffffff"/>
+    <circle cx="10" cy="5" r="3" fill="#ffffff"/>
+  </g>
+  
+  <!-- Texto -->
+  <text x="150" y="250" font-family="Arial, sans-serif" font-size="16" fill="#6c757d" text-anchor="middle">
+    Sin Imagen
+  </text>
+  <text x="150" y="270" font-family="Arial, sans-serif" font-size="12" fill="#adb5bd" text-anchor="middle">
+    Película
+  </text>
+</svg>
