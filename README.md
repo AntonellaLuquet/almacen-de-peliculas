@@ -812,7 +812,7 @@ export default CatalogoPeliculas;
 
 ```jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { usuarioService } from '../services/usuarioService';
 import './RegistroUsuario.css';
 
@@ -869,6 +869,7 @@ const RegistroUsuario = () => {
             onChange={handleChange}
             required
             minLength="3"
+            className="form-control"
           />
         </div>
 
@@ -881,6 +882,7 @@ const RegistroUsuario = () => {
             value={formData.email}
             onChange={handleChange}
             required
+            className="form-control"
           />
         </div>
 
@@ -894,6 +896,7 @@ const RegistroUsuario = () => {
             onChange={handleChange}
             required
             minLength="6"
+            className="form-control"
           />
         </div>
 
@@ -906,6 +909,7 @@ const RegistroUsuario = () => {
             value={formData.nombre}
             onChange={handleChange}
             required
+            className="form-control"
           />
         </div>
 
@@ -918,6 +922,7 @@ const RegistroUsuario = () => {
             value={formData.apellido}
             onChange={handleChange}
             required
+            className="form-control"
           />
         </div>
 
@@ -929,6 +934,7 @@ const RegistroUsuario = () => {
             name="telefono"
             value={formData.telefono}
             onChange={handleChange}
+            className="form-control"
           />
         </div>
 
@@ -940,6 +946,7 @@ const RegistroUsuario = () => {
             name="direccion"
             value={formData.direccion}
             onChange={handleChange}
+            className="form-control"
           />
         </div>
 
@@ -948,7 +955,7 @@ const RegistroUsuario = () => {
         </button>
 
         <p className="login-link">
-          ¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a>
+          ¿Ya tienes cuenta? <Link to="/login">Inicia sesión aquí</Link>
         </p>
       </form>
     </div>
@@ -962,7 +969,7 @@ export default RegistroUsuario;
 
 ```jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 import './LoginForm.css';
 
@@ -1039,7 +1046,7 @@ const LoginForm = () => {
         </button>
 
         <p className="registro-link">
-          ¿No tienes cuenta? <a href="/registro">Regístrate aquí</a>
+          ¿No tienes cuenta? <Link to="/registro">Regístrate aquí</Link>
         </p>
       </form>
     </div>
