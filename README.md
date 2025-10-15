@@ -1,13 +1,46 @@
 # Almacén de Películas Online
 
 ## Descripción del Proyecto
-El sistema **Almacén de Películas Online** es una aplicación web para gestión de usuarios, catálogo de películas y compras mediante carrito.  
+El sistema **Almacén de Películas Online** es una aplicación web completa para gestión de usuarios, catálogo de películas y compras mediante carrito.  
 
-- **Frontend:** React, maneja la interfaz, navegación y consumo de la API REST.  
-- **Backend:** Java 21 + Spring Boot, expone servicios REST.  
-- **Base de datos:** Relacional, gestiona usuarios, películas, carritos y compras.  
+- **Frontend:** React 18 + Vite, maneja la interfaz, navegación y consumo de la API REST.  
+- **Backend:** Java 21 + Spring Boot 3.2, expone servicios REST.  
+- **Base de datos:** H2 (desarrollo) / PostgreSQL (producción), gestiona usuarios, películas, carritos y compras.  
 
-Objetivo: construir un MVP funcional que permita el registro de usuarios, visualización de películas, agregar al carrito, procesar compras y envío de confirmación por correo electrónico.
+**Objetivo:** construir un MVP funcional que permita el registro de usuarios, visualización de películas, agregar al carrito, procesar compras y envío de confirmación por correo electrónico.
+
+## Inicio Rápido
+
+### Requisitos Previos
+- Java 21+
+- Node.js 18+
+- Maven 3.6+
+
+### Ejecutar el Backend
+
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+El servidor estará disponible en `http://localhost:8080`
+
+### Ejecutar el Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+La aplicación estará disponible en `http://localhost:3000`
+
+### Acceso a la Base de Datos H2
+
+URL: `http://localhost:8080/h2-console`
+- JDBC URL: `jdbc:h2:mem:almacendb`
+- Usuario: `sa`
+- Contraseña: (vacío)
 
 ---
 
