@@ -487,7 +487,37 @@ public class SecurityConfig {
 }
 ```
 
-#### 8. Manejo Global de Excepciones (common/exceptions/GlobalExceptionHandler.java)
+#### 8. Excepciones Personalizadas (common/exceptions/ResourceNotFoundException.java)
+
+```java
+package com.almacenpeliculas.common.exceptions;
+
+public class ResourceNotFoundException extends RuntimeException {
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+}
+```
+
+#### 9. Clase de Respuesta de Error (common/exceptions/ErrorResponse.java)
+
+```java
+package com.almacenpeliculas.common.exceptions;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+public class ErrorResponse {
+    private int status;
+    private String message;
+    private LocalDateTime timestamp;
+}
+```
+
+#### 10. Manejo Global de Excepciones (common/exceptions/GlobalExceptionHandler.java)
 
 ```java
 package com.almacenpeliculas.common.exceptions;
@@ -540,7 +570,85 @@ public class GlobalExceptionHandler {
 }
 ```
 
-#### 9. Configuración de la Aplicación (application.properties)
+#### 11. Servicio de Usuarios (service/UsuarioService.java)
+
+```java
+package com.almacenpeliculas.usuarios.service;
+
+import com.almacenpeliculas.common.exceptions.ResourceNotFoundException;
+import com.almacenpeliculas.usuarios.domain.Usuario;
+import com.almacenpeliculas.usuarios.infra.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Service
+@RequiredArgsConstructor
+public class UsuarioService {
+    
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+    
+    @Transactional
+    public Usuario registrarUsuario(Usuario usuario) {
+        if (usuarioRepository.existsByUsername(usuario.getUsername())) {
+            throw new IllegalArgumentException("El nombre de usuario ya existe");
+        }
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+        
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        Set<String> roles = new HashSet<>();
+        roles.add("ROLE_USER");
+        usuario.setRoles(roles);
+        
+        return usuarioRepository.save(usuario);
+    }
+    
+    @Transactional(readOnly = true)
+    public Usuario obtenerPorUsername(String username) {
+        return usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado: " + username));
+    }
+    
+    @Transactional
+    public Usuario actualizarUsuario(String username, Usuario usuarioActualizado) {
+        Usuario usuario = obtenerPorUsername(username);
+        usuario.setNombre(usuarioActualizado.getNombre());
+        usuario.setApellido(usuarioActualizado.getApellido());
+        usuario.setTelefono(usuarioActualizado.getTelefono());
+        usuario.setDireccion(usuarioActualizado.getDireccion());
+        return usuarioRepository.save(usuario);
+    }
+}
+```
+
+#### 12. Repositorio de Usuarios (infra/UsuarioRepository.java)
+
+```java
+package com.almacenpeliculas.usuarios.infra;
+
+import com.almacenpeliculas.usuarios.domain.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+    Optional<Usuario> findByUsername(String username);
+    Optional<Usuario> findByEmail(String email);
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+}
+```
+
+#### 13. Configuración de la Aplicación (application.properties)
 
 ```properties
 # Configuración del servidor
@@ -571,7 +679,7 @@ spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 ```
 
-#### 10. Clase Principal de la Aplicación (AlmacenPeliculasApplication.java)
+#### 14. Clase Principal de la Aplicación (AlmacenPeliculasApplication.java)
 
 ```java
 package com.almacenpeliculas;
@@ -700,7 +808,157 @@ const CatalogoPeliculas = () => {
 export default CatalogoPeliculas;
 ```
 
-#### 2. Componente Login (components/LoginForm.jsx)
+#### 2. Componente de Registro (components/RegistroUsuario.jsx)
+
+```jsx
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { usuarioService } from '../services/usuarioService';
+import './RegistroUsuario.css';
+
+const RegistroUsuario = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    nombre: '',
+    apellido: '',
+    telefono: '',
+    direccion: ''
+  });
+  const [error, setError] = useState('');
+  const [cargando, setCargando] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setCargando(true);
+
+    try {
+      await usuarioService.registrar(formData);
+      navigate('/login');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error al registrar usuario');
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  return (
+    <div className="registro-container">
+      <form onSubmit={handleSubmit} className="registro-form">
+        <h2>Registrarse</h2>
+        
+        {error && <div className="error-message">{error}</div>}
+        
+        <div className="form-group">
+          <label htmlFor="username">Usuario</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            required
+            minLength="3"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="password">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            minLength="6"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="nombre">Nombre</label>
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            value={formData.nombre}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="apellido">Apellido</label>
+          <input
+            type="text"
+            id="apellido"
+            name="apellido"
+            value={formData.apellido}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="telefono">Teléfono</label>
+          <input
+            type="tel"
+            id="telefono"
+            name="telefono"
+            value={formData.telefono}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="direccion">Dirección</label>
+          <input
+            type="text"
+            id="direccion"
+            name="direccion"
+            value={formData.direccion}
+            onChange={handleChange}
+          />
+        </div>
+
+        <button type="submit" disabled={cargando} className="btn-submit">
+          {cargando ? 'Registrando...' : 'Registrarse'}
+        </button>
+
+        <p className="login-link">
+          ¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a>
+        </p>
+      </form>
+    </div>
+  );
+};
+
+export default RegistroUsuario;
+```
+
+#### 3. Componente Login (components/LoginForm.jsx)
 
 ```jsx
 import React, { useState } from 'react';
@@ -791,7 +1049,40 @@ const LoginForm = () => {
 export default LoginForm;
 ```
 
-#### 3. Servicio de Películas (services/peliculasService.js)
+#### 4. Servicio de Usuarios (services/usuarioService.js)
+
+```javascript
+import axios from 'axios';
+
+const API_URL = 'http://localhost:8080/api/usuarios';
+
+export const usuarioService = {
+  registrar: async (usuario) => {
+    const response = await axios.post(`${API_URL}/registro`, usuario);
+    return response.data;
+  },
+
+  obtenerPerfil: async () => {
+    const response = await axios.get(`${API_URL}/perfil`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    return response.data;
+  },
+
+  actualizarPerfil: async (usuario) => {
+    const response = await axios.put(`${API_URL}/perfil`, usuario, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    return response.data;
+  }
+};
+```
+
+#### 5. Servicio de Películas (services/peliculasService.js)
 
 ```javascript
 import axios from 'axios';
@@ -849,7 +1140,11 @@ export const peliculasService = {
 };
 ```
 
-#### 4. Servicio de Autenticación (services/authService.js)
+#### 6. Servicio de Autenticación (services/authService.js)
+
+> **Nota:** Este ejemplo muestra la estructura del servicio de autenticación. 
+> Para una implementación completa con JWT, se requiere agregar un `AuthController` 
+> en el backend que maneje el login y la generación de tokens JWT.
 
 ```javascript
 import axios from 'axios';
@@ -881,7 +1176,7 @@ export const authService = {
 };
 ```
 
-#### 5. Configuración de Rutas (App.jsx)
+#### 7. Configuración de Rutas (App.jsx)
 
 ```jsx
 import React from 'react';
@@ -889,9 +1184,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginForm from './components/LoginForm';
 import RegistroUsuario from './components/RegistroUsuario';
 import CatalogoPeliculas from './components/CatalogoPeliculas';
-import DetallePelicula from './components/DetallePelicula';
-import Carrito from './components/Carrito';
-import PerfilUsuario from './components/PerfilUsuario';
 import { authService } from './services/authService';
 import './App.css';
 
@@ -907,23 +1199,8 @@ function App() {
           <Route path="/login" element={<LoginForm />} />
           <Route path="/registro" element={<RegistroUsuario />} />
           <Route path="/catalogo" element={<CatalogoPeliculas />} />
-          <Route path="/pelicula/:id" element={<DetallePelicula />} />
-          <Route 
-            path="/carrito" 
-            element={
-              <PrivateRoute>
-                <Carrito />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/perfil" 
-            element={
-              <PrivateRoute>
-                <PerfilUsuario />
-              </PrivateRoute>
-            } 
-          />
+          {/* Rutas adicionales para DetallePelicula, Carrito, PerfilUsuario 
+              pueden ser implementadas siguiendo el mismo patrón */}
           <Route path="/" element={<Navigate to="/catalogo" />} />
         </Routes>
       </div>
@@ -933,6 +1210,12 @@ function App() {
 
 export default App;
 ```
+
+> **Nota:** Para una aplicación completa, se pueden agregar componentes adicionales como:
+> - `DetallePelicula`: Para mostrar los detalles de una película específica
+> - `Carrito`: Para gestionar el carrito de compras
+> - `PerfilUsuario`: Para editar el perfil del usuario
+> - `ConfirmacionCompra`: Para confirmar y procesar pedidos
 
 ### Base de Datos
 
@@ -1084,10 +1367,13 @@ npm start
 DB_URL=jdbc:mysql://localhost:3306/almacen_peliculas
 DB_USERNAME=root
 DB_PASSWORD=tu_password
-JWT_SECRET=tu_clave_secreta_jwt
 EMAIL_HOST=smtp.gmail.com
 EMAIL_USERNAME=tu_email@gmail.com
 EMAIL_PASSWORD=tu_password_email
+
+# Para implementación JWT (requiere dependencias adicionales y AuthController)
+# JWT_SECRET=tu_clave_secreta_jwt
+# JWT_EXPIRATION=86400000
 
 # Frontend (.env)
 REACT_APP_API_URL=http://localhost:8080/api
