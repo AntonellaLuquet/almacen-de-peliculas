@@ -195,12 +195,19 @@ El frontend consume la API REST del backend mediante:
 
 1. **Configuración del proxy en Vite:**
    ```javascript
-   proxy: {
-     '/api': {
-       target: 'http://localhost:8080',
-       changeOrigin: true
+   // vite.config.js
+   export default defineConfig({
+     plugins: [react()],
+     server: {
+       port: 3000,
+       proxy: {
+         '/api': {
+           target: 'http://localhost:8080',
+           changeOrigin: true
+         }
+       }
      }
-   }
+   })
    ```
 
 2. **Servicios encapsulados:**
