@@ -698,6 +698,10 @@ public class AlmacenPeliculasApplication {
 
 ### Frontend - React
 
+> **Nota sobre estilos:** Los componentes React utilizan la clase CSS `form-control` y otras clases de estilos. 
+> Estas clases deben ser definidas en los archivos CSS correspondientes (por ejemplo, `LoginForm.css`, `RegistroUsuario.css`).
+> Alternativamente, puedes usar frameworks de estilos como Bootstrap o Tailwind CSS.
+
 #### 1. Componente Catálogo de Películas (components/CatalogoPeliculas.jsx)
 
 ```jsx
@@ -1365,6 +1369,18 @@ npm install axios react-router-dom
 npm start
 
 # La aplicación estará disponible en http://localhost:3000
+```
+
+**Dependencias principales del Frontend (package.json):**
+```json
+{
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.0",
+    "axios": "^1.3.0"
+  }
+}
 ```
 
 #### Configuración de Variables de Entorno
