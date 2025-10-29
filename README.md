@@ -9,6 +9,12 @@ El sistema **Almacén de Películas Online** es una aplicación web para gestió
 
 Objetivo: construir un MVP funcional que permita el registro de usuarios, visualización de películas, agregar al carrito, procesar compras y envío de confirmación por correo electrónico.
 
+## 📊 Métricas del Proyecto
+
+Para ver un análisis completo del estado del proyecto, consulta:
+- **[METRICAS.md](METRICAS.md)** - Resumen ejecutivo y métricas generales
+- **[METRICAS_DETALLADAS.md](METRICAS_DETALLADAS.md)** - Análisis técnico detallado con recomendaciones
+
 ---
 
 ## Arquitectura del Sistema
