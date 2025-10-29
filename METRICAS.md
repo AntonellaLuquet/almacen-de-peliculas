@@ -114,12 +114,12 @@ frontend/src/
 ```
 
 ### Dependencias Principales
-- **Core:** React, React-DOM
-- **UI:** Bootstrap, Bootstrap Icons, React-Bootstrap
+- **Principal:** React, React-DOM
+- **Interfaz:** Bootstrap, Bootstrap Icons, React-Bootstrap
 - **Navegación:** React Router DOM
 - **HTTP:** Axios
 - **Gráficos:** Chart.js, react-chartjs-2
-- **Testing:** Testing Library (Jest DOM, React, User Event)
+- **Pruebas:** Testing Library (Jest DOM, React, User Event)
 
 ### Scripts Disponibles
 - `npm start`: Servidor de desarrollo (puerto 3000)
@@ -129,7 +129,7 @@ frontend/src/
 
 ### Configuración
 - **Proxy API:** http://localhost:8081 (conecta con backend)
-- **Browser Support:** Navegadores modernos (>0.2% market share)
+- **Soporte de Navegadores:** Navegadores modernos (>0.2% market share)
 
 ---
 
@@ -170,9 +170,9 @@ Cada módulo funcional contiene todas sus capas:
 
 ### Áreas de Mejora Identificadas
 
-#### 1. Testing (CRÍTICO)
+#### 1. Pruebas (CRÍTICO)
 - **Backend:** Aumentar cobertura de tests
-  - Target recomendado: >70% para servicios
+  - Objetivo recomendado: >70% para servicios
   - Agregar tests de integración para controllers
   - Implementar tests para repositorios
 - **Frontend:** Agregar tests para componentes y hooks
@@ -237,7 +237,7 @@ Cada módulo funcional contiene todas sus capas:
 3. Configurar CI/CD (GitHub Actions)
 4. Agregar logging y monitoreo
 5. Documentación de API con ejemplos
-6. Performance testing
+6. Pruebas de rendimiento
 
 ---
 

@@ -172,7 +172,7 @@ frontend/src/
 
 ### Backend (Spring Boot)
 
-#### Core Dependencies
+#### Dependencias Principales
 ```xml
 Spring Boot Starters:
 ├── spring-boot-starter-web           (API REST)
@@ -182,7 +182,7 @@ Spring Boot Starters:
 └── spring-boot-starter-mail          (Email)
 ```
 
-#### Security & Authentication
+#### Seguridad y Autenticación
 ```xml
 JWT (JSON Web Tokens):
 ├── jjwt-api (0.12.3)
@@ -190,19 +190,19 @@ JWT (JSON Web Tokens):
 └── jjwt-jackson (0.12.3)
 ```
 
-#### Database
+#### Base de Datos
 ```xml
 ├── H2 Database (desarrollo)
 └── PostgreSQL (producción)
 ```
 
-#### Tools & Utilities
+#### Herramientas y Utilidades
 ```xml
 ├── MapStruct (1.6.0)              - Mapeo de DTOs
 └── SpringDoc OpenAPI (2.6.0)      - Documentación API
 ```
 
-#### Testing
+#### Pruebas
 ```xml
 ├── spring-boot-starter-test
 ├── spring-security-test
@@ -211,15 +211,15 @@ JWT (JSON Web Tokens):
 
 ### Frontend (React)
 
-#### Core Framework
+#### Framework Principal
 ```json
-React Ecosystem:
+Ecosistema React:
 ├── react (18.2.0)
 ├── react-dom (18.2.0)
 └── react-scripts (5.0.1)
 ```
 
-#### UI Framework
+#### Framework de Interfaz
 ```json
 Bootstrap:
 ├── bootstrap (5.3.8)
@@ -227,22 +227,22 @@ Bootstrap:
 └── react-bootstrap (2.10.10)
 ```
 
-#### Routing & State
+#### Enrutamiento y Estado
 ```json
 ├── react-router-dom (6.15.0)      - Navegación
 └── (Context API nativo)            - Estado global
 ```
 
-#### HTTP & Data
+#### HTTP y Datos
 ```json
 ├── axios (1.5.0)                   - Cliente HTTP
 ├── chart.js (4.5.1)                - Gráficos
 └── react-chartjs-2 (5.3.0)         - Integración gráficos
 ```
 
-#### Testing
+#### Pruebas
 ```json
-Testing Library:
+Librería de Testing:
 ├── @testing-library/react
 ├── @testing-library/jest-dom
 └── @testing-library/user-event
@@ -286,10 +286,10 @@ Líneas de Código por Tipo (Frontend):
 
 | Indicador | Valor | Estado |
 |-----------|-------|--------|
-| **Backend: Test Coverage** | ~5% | 🔴 Crítico |
-| **Frontend: Test Coverage** | 0% | 🔴 Crítico |
-| **Backend: Avg LOC/File** | 133 | ✅ Bueno |
-| **Frontend: Avg LOC/File** | 309 | ⚠️ Alto |
+| **Backend: Cobertura de Tests** | ~5% | 🔴 Crítico |
+| **Frontend: Cobertura de Tests** | 0% | 🔴 Crítico |
+| **Backend: Prom. Líneas/Archivo** | 133 | ✅ Bueno |
+| **Frontend: Prom. Líneas/Archivo** | 309 | ⚠️ Alto |
 | **Módulos Completos** | 2/3 | ⚠️ Medio |
 
 ### Indicadores de Calidad
@@ -318,7 +318,7 @@ Líneas de Código por Tipo (Frontend):
 ## 🎯 Roadmap de Mejoras
 
 ### Prioridad ALTA 🔴
-- [ ] Implementar suite de tests (objetivo: 70% coverage)
+- [ ] Implementar suite de tests (objetivo: 70% cobertura)
 - [ ] Refactorizar ProfilePage.js (<300 líneas)
 - [ ] Completar módulo de Pedidos (API, Service, Repository)
 
@@ -329,8 +329,8 @@ Líneas de Código por Tipo (Frontend):
 - [ ] Documentación JavaDoc/JSDoc
 
 ### Prioridad BAJA 🟢
-- [ ] Performance optimization
-- [ ] Code style automatizado (Prettier, ESLint)
+- [ ] Optimización de rendimiento
+- [ ] Estilo de código automatizado (Prettier, ESLint)
 - [ ] Análisis estático de código (SonarQube)
 - [ ] Dockerización del proyecto
 
