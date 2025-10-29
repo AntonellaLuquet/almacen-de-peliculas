@@ -52,7 +52,7 @@ const CartPage = () => {
    * Elimina un item del carrito
    */
   const handleRemoveItem = async (itemId) => {
-    if (!confirm('¿Estás seguro de que quieres eliminar este item del carrito?')) {
+    if (!window.confirm('¿Estás seguro de que quieres eliminar este item del carrito?')) {
       return;
     }
 
@@ -74,7 +74,7 @@ const CartPage = () => {
    * Vacía el carrito completamente
    */
   const handleClearCart = async () => {
-    if (!confirm('¿Estás seguro de que quieres vaciar todo el carrito?')) {
+    if (!window.confirm('¿Estás seguro de que quieres vaciar todo el carrito?')) {
       return;
     }
 

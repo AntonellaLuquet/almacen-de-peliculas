@@ -3,7 +3,7 @@
  */
 
 // URL base de la API
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8081/api';
 
 // Clave para almacenar el token en localStorage
 export const TOKEN_KEY = 'almacen_token';
