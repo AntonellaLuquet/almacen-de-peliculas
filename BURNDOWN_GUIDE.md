@@ -22,14 +22,29 @@ Un **Burndown Chart** (gráfico de trabajo pendiente) es una herramienta visual 
 
 ### Opción 1: Herramienta Interactiva (Recomendada)
 
-Usa el archivo `burndown-chart.html` incluido en este repositorio:
+**Versión Simple** (burndown-chart-simple.html):
+- 100% offline, sin dependencias externas
+- Interfaz sencilla con entrada de datos separados por comas
+- Ideal para equipos que necesitan una solución rápida
+
+1. Abre el archivo `burndown-chart-simple.html` en tu navegador
+2. Ingresa el nombre de tu sprint
+3. Ingresa los datos de trabajo restante separados por comas
+   - Ejemplo: `50, 48, 45, 40, 35, 28, 22, 15, 10, 5, 0`
+4. Haz clic en "Generar Gráfico"
+
+**Versión Avanzada** (burndown-chart.html):
+- Usa Chart.js para gráficos profesionales
+- Campos individuales para cada día del sprint
+- Más opciones de personalización
 
 1. Abre el archivo `burndown-chart.html` en tu navegador
 2. Ingresa los datos de tu sprint:
    - Duración del sprint (días)
    - Trabajo total inicial (story points o horas)
-   - Trabajo completado cada día
-3. El gráfico se generará automáticamente
+3. Genera campos para datos diarios
+4. Completa el trabajo completado cada día
+5. El gráfico se generará automáticamente
 
 ### Opción 2: Herramienta Python
 
@@ -124,8 +139,8 @@ Puedes usar herramientas gratuitas como:
 
 ## Recomendaciones Finales
 
-1. **Para equipos nuevos**: Comienza con la herramienta HTML incluida, es simple y visual
-2. **Para equipos establecidos**: Considera integrar con tu herramienta de gestión (Jira, Azure DevOps)
+1. **Para equipos nuevos**: Comienza con `burndown-chart-simple.html` - es simple, visual y funciona offline
+2. **Para equipos establecidos**: Considera `burndown-chart.html` para una interfaz más detallada, o integra con tu herramienta de gestión (Jira, Azure DevOps)
 3. **Para análisis profundo**: Usa el script Python para generar reportes históricos
 4. **Para presentaciones**: Exporta los gráficos como imágenes
 

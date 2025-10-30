@@ -10,19 +10,27 @@ Este directorio contiene herramientas para medir y visualizar el burndown de tu 
 - Mejores prácticas
 - Recomendaciones para equipos
 
-### 2. **Herramienta Web Interactiva** (`burndown-chart.html`)
-- **Recomendado para la mayoría de equipos**
-- Sin instalación necesaria
-- Interfaz visual intuitiva
-- Gráficos en tiempo real
+### 2. **Herramienta Web Interactiva** 
+
+**Versión Simple** (`burndown-chart-simple.html`) - **Recomendado**
+- Sin dependencias externas
+- Funciona completamente offline
+- Interfaz simple: ingresa datos separados por comas
+- Gráficos dibujados con Canvas API
 - Estadísticas automáticas
+
+**Versión Avanzada** (`burndown-chart.html`)
+- Usa Chart.js (requiere conexión para CDN)
+- Campos individuales para cada día
+- Interfaz más detallada
+- Validación en tiempo real
 
 **Cómo usar:**
 ```bash
 # Simplemente abre el archivo en tu navegador
-open burndown-chart.html
+open burndown-chart-simple.html
 # o
-firefox burndown-chart.html
+firefox burndown-chart-simple.html
 # o doble clic en el archivo
 ```
 
@@ -44,6 +52,13 @@ python burndown_generator.py
 
 ### Opción 1: Herramienta Web (Más Fácil)
 
+**Versión Simple (Recomendada):**
+1. Abre `burndown-chart-simple.html` en tu navegador
+2. Ingresa el nombre de tu sprint
+3. Ingresa los datos separados por comas: `50, 48, 45, 40, 35, 28, 22, 15, 10, 5, 0`
+4. Haz clic en "Generar Gráfico"
+
+**Versión Avanzada:**
 1. Abre `burndown-chart.html` en tu navegador
 2. Ingresa el nombre de tu sprint
 3. Ingresa la duración (ej: 10 días)
@@ -106,7 +121,8 @@ Esto generará un ejemplo con datos de muestra.
 
 ### Herramienta Web
 - Cualquier navegador moderno (Chrome, Firefox, Safari, Edge)
-- No requiere conexión a internet (usa CDN para Chart.js pero funciona offline si se descarga)
+- **Versión Simple**: No requiere conexión a internet (100% offline)
+- **Versión Avanzada**: Requiere conexión para cargar Chart.js desde CDN (o funciona offline si se descarga localmente)
 
 ### Script Python
 - Python 3.6+
