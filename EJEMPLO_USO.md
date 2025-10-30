@@ -68,7 +68,17 @@
 
 ### Cómo Usar Este Ejemplo
 
-#### Con la Herramienta Web (burndown-chart.html)
+#### Con la Herramienta Web Simple (burndown-chart-simple.html) - Recomendado
+1. Abre `burndown-chart-simple.html` en tu navegador
+2. Ingresa:
+   - Nombre: "Sprint 1 - Desarrollo de Catálogo"
+3. En el campo de trabajo restante, ingresa:
+   ```
+   50, 48, 45, 40, 35, 28, 22, 15, 10, 5, 0
+   ```
+4. Haz clic en "Generar Gráfico"
+
+#### Con la Herramienta Web Avanzada (burndown-chart.html)
 1. Abre `burndown-chart.html` en tu navegador
 2. Ingresa:
    - Nombre: "Sprint 1 - Desarrollo de Catálogo"
