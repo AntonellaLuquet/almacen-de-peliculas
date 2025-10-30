@@ -128,3 +128,46 @@ Eres un asistente de desarrollo experto en Java 21 con Spring Boot y React. Tu t
 7. Mantén consistencia con los nombres de carpetas y convenciones de Spring Boot y React.
 
 Objetivo final: tener un **MVP funcional completo** backend + frontend listo para ejecutar, probar y extender.
+````
+
+---
+
+## Cómo levantar el proyecto
+
+### Backend (Spring Boot)
+1. Ve al directorio `backend`:
+   ```bash
+   cd backend
+   ```
+2. Ejecuta el backend con Maven:
+   ```bash
+   mvn spring-boot:run
+   ```
+   - El backend se inicia en `http://localhost:8081/api`
+   - La base de datos H2 se inicializa automáticamente. Acceso a la consola H2: `http://localhost:8081/api/h2-console` (JDBC URL: `jdbc:h2:mem:almacendb`, usuario: `sa`, sin password)
+
+### Frontend (React)
+1. Ve al directorio `frontend`:
+   ```bash
+   cd frontend
+   ```
+2. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+3. Inicia la aplicación React:
+   ```bash
+   npm start
+   ```
+   - El frontend se inicia en `http://localhost:3000`
+   - El proxy está configurado para consumir la API en el puerto 8081
+
+### Credenciales de prueba
+- **Administrador:**
+  - Email: `admin@almacen.com`
+  - Contraseña: `admin123`
+- **Cliente:**
+  - Email: `cliente@test.com`
+  - Contraseña: `admin123`
+
+---

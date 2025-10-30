@@ -160,7 +160,7 @@ class UsuarioServiceTest {
         usuarioService.cambiarPassword(1L, passwordActual, passwordNuevo);
         
         // Then
-        verify(passwordEncoder).matches(passwordActual, usuario.getPassword());
+        verify(passwordEncoder).matches(passwordActual, "hashedPassword"); // Usar el password original del usuario
         verify(passwordEncoder).encode(passwordNuevo);
         verify(usuarioRepository).save(usuario);
     }

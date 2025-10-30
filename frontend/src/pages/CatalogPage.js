@@ -75,7 +75,7 @@ const CatalogPage = () => {
       if (filtros.precioMax) params.precioMax = filtros.precioMax;
       if (filtros.puntuacionMin) params.puntuacionMin = filtros.puntuacionMin;
 
-      const response = await peliculasService.buscarPeliculas(params);
+      const response = await peliculasService.buscarConFiltros(filtros, params);
       
       setPeliculas(response.content || []);
       setTotalPages(response.totalPages || 0);

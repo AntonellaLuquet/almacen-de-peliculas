@@ -29,7 +29,7 @@ const MovieDetailPage = () => {
         setLoading(true);
         setError(null);
         
-        const peliculaData = await peliculasService.obtenerPelicula(id);
+        const peliculaData = await peliculasService.obtenerPeliculaPorId(id);
         setPelicula(peliculaData);
         
       } catch (error) {

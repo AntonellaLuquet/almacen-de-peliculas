@@ -22,7 +22,7 @@ const HomePage = () => {
         setLoading(true);
         
         // Cargar películas destacadas (primeras 6)
-        const destacadas = await peliculasService.buscarPeliculas({
+        const destacadas = await peliculasService.obtenerPeliculas({
           page: 0,
           size: 6,
           sortBy: 'fechaCreacion',
@@ -30,7 +30,7 @@ const HomePage = () => {
         });
         
         // Cargar últimas novedades (últimas 8)
-        const novedades = await peliculasService.buscarPeliculas({
+        const novedades = await peliculasService.obtenerPeliculas({
           page: 0,
           size: 8,
           sortBy: 'fechaCreacion',
@@ -38,7 +38,7 @@ const HomePage = () => {
         });
         
         // Cargar mejor puntuadas (top 6)
-        const mejores = await peliculasService.buscarPeliculas({
+        const mejores = await peliculasService.obtenerPeliculas({
           page: 0,
           size: 6,
           sortBy: 'puntuacion',

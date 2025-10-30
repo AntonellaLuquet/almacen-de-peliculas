@@ -165,6 +165,39 @@ const peliculasService = {
       params: { stockMinimo }
     });
     return response.data;
+  },
+
+  /**
+   * Búsqueda general de películas (alias para compatibilidad)
+   * @param {object} filtros - Filtros de búsqueda
+   * @param {object} params - Parámetros de paginación
+   * @returns {Promise} - Promesa con resultados filtrados
+   */
+  searchPeliculas: async (filtros = {}, params = {}) => {
+    // Si no hay filtros específicos, usar obtenerPeliculas
+    if (Object.keys(filtros).length === 0) {
+      return await peliculasService.obtenerPeliculas(params);
+    }
+    
+    // Si hay filtros, usar buscarConFiltros
+    return await peliculasService.buscarConFiltros(filtros, params);
+  },
+
+  // Alias adicionales para compatibilidad
+  createPelicula: async (peliculaData) => {
+    return await peliculasService.crearPelicula(peliculaData);
+  },
+
+  updatePelicula: async (peliculaId, peliculaData) => {
+    return await peliculasService.actualizarPelicula(peliculaId, peliculaData);
+  },
+
+  deletePelicula: async (peliculaId) => {
+    return await peliculasService.eliminarPelicula(peliculaId);
+  },
+
+  obtenerPelicula: async (peliculaId) => {
+    return await peliculasService.obtenerPeliculaPorId(peliculaId);
   }
 };
 

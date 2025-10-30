@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Nav, Tab } from 'react-bootstrap';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import AdminDashboard from './AdminDashboard';
-import AdminUsers from './AdminUsers';
-import AdminMovies from './AdminMovies';
-import AdminOrders from './AdminOrders';
-import AdminStats from './AdminStats';
+import AdminDashboard from './admin/AdminDashboard';
+import AdminUsers from './admin/AdminUsers';
+import AdminMovies from './admin/AdminMovies';
+import AdminOrders from './admin/AdminOrders';
+import AdminStats from './admin/AdminStats';
 
 /**
  * Página principal de administración con navegación por tabs

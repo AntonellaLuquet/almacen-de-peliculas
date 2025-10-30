@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Layout from './components/Layout/Layout';
 import HomePage from './pages/HomePage';
+import TestPage from './TestPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import CatalogPage from './pages/CatalogPage';
@@ -37,6 +38,7 @@ function App() {
               <Routes>
                 {/* Rutas públicas */}
                 <Route path="/" element={<HomePage />} />
+                <Route path="/test" element={<TestPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/catalogo" element={<CatalogPage />} />
