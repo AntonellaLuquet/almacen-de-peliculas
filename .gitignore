@@ -1,0 +1,46 @@
+# Archivos de Log
+*.log
+
+# Archivos de dependencias de paquetes
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Directorios de dependencias
+node_modules/
+
+# Directorio de build del frontend
+/frontend/build
+
+# Archivos de entorno local del frontend
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Archivos de IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Directorio de build de Maven
+/backend/target/
+
+# Archivos de volcado de errores de la JVM
+hs_err_pid*
+
+# Archivos de configuración local de Spring Boot
+/backend/src/main/resources/application-local.properties
+/backend/src/main/resources/application-local.yml
+
+# Archivos generados por Maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
