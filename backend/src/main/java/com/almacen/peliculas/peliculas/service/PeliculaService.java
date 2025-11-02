@@ -133,6 +133,9 @@ public class PeliculaService {
         if (actualizarDTO.getPrecio() != null) {
             pelicula.setPrecio(actualizarDTO.getPrecio());
         }
+        if (actualizarDTO.getStock() != null) {
+            pelicula.setStock(actualizarDTO.getStock());
+        }
         if (actualizarDTO.getImagenUrl() != null) {
             pelicula.setImagenUrl(actualizarDTO.getImagenUrl());
         }
