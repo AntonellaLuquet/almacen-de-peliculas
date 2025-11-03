@@ -25,7 +25,7 @@ public class ItemCarrito {
     @JoinColumn(name = "carrito_id", nullable = false)
     private Carrito carrito;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pelicula_id", nullable = false)
     private Pelicula pelicula;
     

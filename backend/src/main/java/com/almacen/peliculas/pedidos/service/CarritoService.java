@@ -1,6 +1,9 @@
 package com.almacen.peliculas.pedidos.service;
 
-import com.almacen.peliculas.common.exceptions.ResourceNotFoundException;
+import com.almacen.peliculas.peliculas.common.exceptions.PeliculaNotFoundException;
+import com.almacen.peliculas.pedidos.common.exceptions.CarritoNotFoundException;
+import com.almacen.peliculas.pedidos.common.exceptions.ItemCarritoNotFoundException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.almacen.peliculas.pedidos.domain.AgregarItemCarritoDTO;
 import com.almacen.peliculas.pedidos.domain.Carrito;
 import com.almacen.peliculas.pedidos.domain.ItemCarrito;
@@ -10,6 +13,7 @@ import com.almacen.peliculas.peliculas.domain.Pelicula;
 import com.almacen.peliculas.peliculas.infra.PeliculaRepository;
 import com.almacen.peliculas.usuarios.domain.Usuario;
 import com.almacen.peliculas.usuarios.infra.UsuarioRepository;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +27,8 @@ public class CarritoService {
     private final UsuarioRepository usuarioRepository;
     private final CarritoMapper carritoMapper;
 
-    public CarritoService(CarritoRepository carritoRepository, PeliculaRepository peliculaRepository, UsuarioRepository usuarioRepository, CarritoMapper carritoMapper) {
+    public CarritoService(CarritoRepository carritoRepository, PeliculaRepository peliculaRepository,
+            UsuarioRepository usuarioRepository, CarritoMapper carritoMapper) {
         this.carritoRepository = carritoRepository;
         this.peliculaRepository = peliculaRepository;
         this.usuarioRepository = usuarioRepository;
@@ -32,6 +37,7 @@ public class CarritoService {
 
     /**
      * Obtiene el carrito del usuario actual, o crea uno si no existe.
+     * 
      * @return El DTO del carrito del usuario.
      */
     public CarritoDTO getCarrito() {
@@ -42,6 +48,7 @@ public class CarritoService {
 
     /**
      * Agrega un item al carrito del usuario actual.
+     * 
      * @param itemDTO DTO con la información del item a agregar.
      * @return El DTO del carrito actualizado.
      */
@@ -49,18 +56,19 @@ public class CarritoService {
         Usuario usuario = getCurrentUser();
         Carrito carrito = getOrCreateCarrito(usuario);
         Pelicula pelicula = peliculaRepository.findById(itemDTO.getPeliculaId())
-                .orElseThrow(() -> new ResourceNotFoundException("Pelicula", "id", itemDTO.getPeliculaId()));
+                .orElseThrow(() -> new PeliculaNotFoundException("No se encontró una pelicula con id: " + itemDTO.getPeliculaId()));
 
         ItemCarrito nuevoItem = new ItemCarrito(pelicula, itemDTO.getCantidad());
         carrito.agregarItem(nuevoItem);
-        
+
         carritoRepository.save(carrito);
         return carritoMapper.toCarritoDTO(carrito);
     }
 
     /**
      * Actualiza la cantidad de un item en el carrito.
-     * @param itemId ID del item a actualizar.
+     * 
+     * @param itemId   ID del item a actualizar.
      * @param cantidad Nueva cantidad.
      * @return El DTO del carrito actualizado.
      */
@@ -82,6 +90,7 @@ public class CarritoService {
 
     /**
      * Elimina un item del carrito.
+     * 
      * @param itemId ID del item a eliminar.
      * @return El DTO del carrito actualizado.
      */
@@ -89,23 +98,24 @@ public class CarritoService {
         Usuario usuario = getCurrentUser();
         Carrito carrito = getCarritoByUsuario(usuario);
         ItemCarrito item = findItemInCarrito(carrito, itemId);
-        
+
         carrito.removerItem(item);
-        
+
         carritoRepository.save(carrito);
         return carritoMapper.toCarritoDTO(carrito);
     }
 
     /**
      * Vacía el carrito del usuario actual.
+     * 
      * @return El DTO del carrito vacío.
      */
     public CarritoDTO limpiarCarrito() {
         Usuario usuario = getCurrentUser();
         Carrito carrito = getCarritoByUsuario(usuario);
-        
+
         carrito.limpiar();
-        
+
         carritoRepository.save(carrito);
         return carritoMapper.toCarritoDTO(carrito);
     }
@@ -120,19 +130,19 @@ public class CarritoService {
 
     private Carrito getCarritoByUsuario(Usuario usuario) {
         return carritoRepository.findByUsuario(usuario)
-                .orElseThrow(() -> new ResourceNotFoundException("Carrito", "usuarioId", usuario.getId()));
+                .orElseThrow(() -> new CarritoNotFoundException("No se encontró un carrito para el usuario con id: " + usuario.getId()));
     }
 
     private ItemCarrito findItemInCarrito(Carrito carrito, Long itemId) {
         return carrito.getItems().stream()
                 .filter(i -> i.getId().equals(itemId))
                 .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("ItemCarrito", "id", itemId));
+                .orElseThrow(() -> new ItemCarritoNotFoundException("No se encontró un item en el carrito con id: " + itemId));
     }
 
     private Usuario getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return usuarioRepository.findByEmail(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "email", username));
+        return usuarioRepository.findByEmailAndActivo(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
     }
 }

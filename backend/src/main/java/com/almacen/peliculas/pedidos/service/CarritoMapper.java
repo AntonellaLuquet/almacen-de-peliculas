@@ -14,7 +14,7 @@ import org.mapstruct.factory.Mappers;
  * 
  * @author Sistema de Almacén de Películas
  */
-@Mapper(uses = {PeliculaMapper.class})
+@Mapper(componentModel = "spring", uses = {PeliculaMapper.class})
 public interface CarritoMapper {
 
     CarritoMapper INSTANCE = Mappers.getMapper(CarritoMapper.class);

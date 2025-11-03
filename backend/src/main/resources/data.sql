@@ -2,13 +2,18 @@
 
 -- Insertar usuario administrador por defecto
 INSERT INTO usuarios (email, nombre, apellido, password, rol, activo, fecha_creacion)
-VALUES ('admin@almacen.com', 'Administrador', 'Sistema', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOwk9aTUkjykTYzMkF8MZxeVGCJoQKnwG', 'ADMIN', true, CURRENT_TIMESTAMP);
+VALUES ('admin@almacen.com', 'Administrador', 'Sistema', '$2y$10$VYxZovFjQJFtjFHeJTIHpu3xcmXH.KIymtFuFd4hrerr8kJoJ/E/u', 'ADMIN', true, CURRENT_TIMESTAMP);
 -- Password: admin123 (encriptado con BCrypt)
 
 -- Insertar usuario cliente de prueba  
 INSERT INTO usuarios (email, nombre, apellido, password, rol, activo, telefono, direccion, fecha_creacion)
-VALUES ('cliente@test.com', 'Juan', 'Pérez', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOwk9aTUkjykTYzMkF8MZxeVGCJoQKnwG', 'CLIENTE', true, '555-1234', 'Calle Falsa 123, Ciudad', CURRENT_TIMESTAMP);
+VALUES ('cliente@test.com', 'Juan', 'Pérez', '$2y$10$VYxZovFjQJFtjFHeJTIHpu3xcmXH.KIymtFuFd4hrerr8kJoJ/E/u', 'CLIENTE', true, '555-1234', 'Calle Falsa 123, Ciudad', CURRENT_TIMESTAMP);
 -- Password: admin123 (encriptado con BCrypt)
+
+-- Insertar usuario de prueba de Mercado Pago (COMPRADOR)
+INSERT INTO usuarios (email, nombre, apellido, password, rol, activo, fecha_creacion)
+VALUES ('TESTUSER9052358849520235020@testuser.com', 'Buyer', 'Test User', '$2y$10$2eRp5uQkzxR0.mM5KlNqIO0Dynd5qcgF/mmfLkqWWP0a3Or7W9ldC', 'CLIENTE', true, CURRENT_TIMESTAMP);
+-- Password: kH12nIL9NK (encriptado con BCrypt)
 
 -- Usuario administrador con BCrypt (backup)
 INSERT INTO usuarios (email, nombre, apellido, password, rol, activo, fecha_creacion)

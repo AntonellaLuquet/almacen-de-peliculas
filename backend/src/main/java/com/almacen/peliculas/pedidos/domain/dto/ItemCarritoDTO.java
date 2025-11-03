@@ -12,7 +12,7 @@ public class ItemCarritoDTO {
     
     private Long id;
     private PeliculaDTO pelicula;
-    private int cantidad;
+    private int cantidad = 1;
     private BigDecimal precioUnitario;
     private BigDecimal subtotal;
 
@@ -56,5 +56,9 @@ public class ItemCarritoDTO {
 
     public void setSubtotal(BigDecimal subtotal) {
         this.subtotal = subtotal;
+    }
+
+    public String getNombrePelicula() {
+        return this.pelicula.getTitulo();
     }
 }
