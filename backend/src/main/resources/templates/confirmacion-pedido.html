@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmación de Pedido</title>
+</head>
+<body>
+    <h1>¡Gracias por tu compra, [[nombreUsuario]]!</h1>
+    <p>Tu pedido con número <strong>#[[idPedido]]</strong> ha sido recibido y está siendo procesado.</p>
+    <p>Resumen del pedido:</p>
+    <ul>
+        <!-- Aquí se podrían iterar los items, pero por simplicidad solo mostramos el total -->
+        <li>Total de la compra: <strong>$[[totalPedido]]</strong></li>
+        <li>Método de pago: <strong>[[metodoPago]]</strong></li>
+    </ul>
+    <p>Recibirás otra notificación cuando tu pedido sea enviado.</p>
+    <p>Saludos,<br>El equipo del Almacén de Películas</p>
+</body>
+</html>
