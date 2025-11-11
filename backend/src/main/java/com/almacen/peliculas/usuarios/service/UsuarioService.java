@@ -7,6 +7,7 @@ import com.almacen.peliculas.common.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -56,6 +57,30 @@ public class UsuarioService implements UserDetailsService {
         return usuarioRepository.findByEmailAndActivo(email)
             .orElseThrow(() -> new UsernameNotFoundException(
                 "Usuario no encontrado con email: " + email));
+    }
+
+    /**
+     * Obtiene la entidad del usuario actualmente autenticado.
+     * @return La entidad Usuario del usuario logueado.
+     * @throws UsernameNotFoundException si no se encuentra el usuario en la base de datos.
+     * @throws IllegalStateException si no hay un usuario autenticado.
+     */
+    @Transactional(readOnly = true)
+    public Usuario getUsuarioAutenticado() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        if (username == null) {
+            throw new IllegalStateException("No hay un usuario autenticado.");
+        }
+
+        return usuarioRepository.findByEmailIgnoreCase(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario autenticado no encontrado en la base de datos: " + username));
     }
     
     /**

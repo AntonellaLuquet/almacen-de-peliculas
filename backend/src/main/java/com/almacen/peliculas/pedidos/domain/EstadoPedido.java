@@ -18,6 +18,10 @@ public enum EstadoPedido {
      * Pedido confirmado y pagado
      */
     CONFIRMADO("Confirmado"),
+    /**
+     * Pedido confirmado y pagado
+     */
+    RECHAZADO("Confirmado"),
     
     /**
      * Pedido en proceso de preparación

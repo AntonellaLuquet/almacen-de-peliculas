@@ -67,6 +67,7 @@ public class SecurityConfig {
                 .requestMatchers("/usuarios/email-disponible").permitAll()
                 .requestMatchers("/peliculas", "/peliculas/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/api/payments/mercadopago/webhook").permitAll() // Permitir webhook de Mercado Pago
                 
                 // Documentación API (Swagger)
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()

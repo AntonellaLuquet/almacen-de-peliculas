@@ -1,21 +1,11 @@
 package com.almacen.peliculas.pedidos.domain;
 
 import com.almacen.peliculas.peliculas.domain.Pelicula;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
-/**
- * Entidad ItemPedido que representa un item específico dentro de un pedido
- * 
- * Contiene información del item:
- * - Referencia a la película comprada
- * - Cantidad solicitada
- * - Precio unitario al momento de la compra (histórico)
- * - Subtotal calculado
- * 
- * @author Sistema de Almacén de Películas
- */
 @Entity
 @Table(name = "items_pedido")
 public class ItemPedido {
@@ -26,6 +16,7 @@ public class ItemPedido {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id", nullable = false)
+    @JsonBackReference
     private Pedido pedido;
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -60,7 +51,6 @@ public class ItemPedido {
         this.precioUnitario = pelicula.getPrecio();
         this.subtotal = precioUnitario.multiply(BigDecimal.valueOf(cantidad));
         
-        // Guardar información histórica
         this.tituloPelicula = pelicula.getTitulo();
         this.directorPelicula = pelicula.getDirector();
         this.anioPelicula = pelicula.getAnio();
@@ -141,21 +131,12 @@ public class ItemPedido {
         this.anioPelicula = anioPelicula;
     }
     
-    // Métodos de utilidad
-    
-    /**
-     * Recalcula el subtotal basado en cantidad y precio unitario
-     */
     private void recalcularSubtotal() {
         if (cantidad != null && precioUnitario != null) {
             this.subtotal = precioUnitario.multiply(BigDecimal.valueOf(cantidad));
         }
     }
     
-    /**
-     * Actualiza la cantidad y recalcula el subtotal
-     * @param nuevaCantidad nueva cantidad
-     */
     public void actualizarCantidad(Integer nuevaCantidad) {
         this.cantidad = nuevaCantidad;
         recalcularSubtotal();

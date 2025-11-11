@@ -1,6 +1,7 @@
 package com.almacen.peliculas.pedidos.domain;
 
 import com.almacen.peliculas.usuarios.domain.Usuario;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -11,17 +12,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Entidad Pedido que representa una compra realizada por un usuario
- * 
- * Contiene información completa del pedido:
- * - Usuario que realizó el pedido
- * - Items del pedido con cantidades y precios
- * - Estado del pedido y información de pago
- * - Totales calculados y fechas de auditoría
- * 
- * @author Sistema de Almacén de Películas
- */
 @Entity
 @Table(name = "pedidos")
 @EntityListeners(AuditingEntityListener.class)
@@ -54,13 +44,14 @@ public class Pedido {
     @Column(length = 100)
     private String transaccionId;
     
-    @Column(length = 1000)
-    private String direccionEnvio;
+    @Embedded
+    private Direccion direccionEnvio;
     
     @Column(length = 500)
     private String notas;
     
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<ItemPedido> items = new ArrayList<>();
     
     @CreatedDate
@@ -81,7 +72,6 @@ public class Pedido {
     
     public Pedido(Usuario usuario) {
         this.usuario = usuario;
-        this.direccionEnvio = usuario.getDireccion();
     }
     
     // Getters y Setters
@@ -149,11 +139,11 @@ public class Pedido {
         this.transaccionId = transaccionId;
     }
     
-    public String getDireccionEnvio() {
+    public Direccion getDireccionEnvio() {
         return direccionEnvio;
     }
-    
-    public void setDireccionEnvio(String direccionEnvio) {
+
+    public void setDireccionEnvio(Direccion direccionEnvio) {
         this.direccionEnvio = direccionEnvio;
     }
     
@@ -215,96 +205,25 @@ public class Pedido {
     
     // Métodos de utilidad
     
-    /**
-     * Agrega un item al pedido
-     * @param item item a agregar
-     */
     public void agregarItem(ItemPedido item) {
         items.add(item);
         item.setPedido(this);
         recalcularTotales();
     }
     
-    /**
-     * Remueve un item del pedido
-     * @param item item a remover
-     */
     public void removerItem(ItemPedido item) {
         items.remove(item);
         item.setPedido(null);
         recalcularTotales();
     }
     
-    /**
-     * Recalcula los totales del pedido basándose en los items
-     */
     public void recalcularTotales() {
         subtotal = items.stream()
             .map(ItemPedido::getSubtotal)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         
-        // Calcular impuestos (ejemplo: 21% IVA)
         impuestos = subtotal.multiply(BigDecimal.valueOf(0.21));
         
-        // Calcular total
         total = subtotal.add(impuestos);
-    }
-    
-    /**
-     * Confirma el pedido
-     */
-    public void confirmar() {
-        this.estado = EstadoPedido.CONFIRMADO;
-        this.fechaConfirmacion = LocalDateTime.now();
-    }
-    
-    /**
-     * Marca el pedido como enviado
-     */
-    public void enviar() {
-        this.estado = EstadoPedido.ENVIADO;
-        this.fechaEnvio = LocalDateTime.now();
-    }
-    
-    /**
-     * Marca el pedido como entregado
-     */
-    public void entregar() {
-        this.estado = EstadoPedido.ENTREGADO;
-        this.fechaEntrega = LocalDateTime.now();
-    }
-    
-    /**
-     * Cancela el pedido
-     */
-    public void cancelar() {
-        this.estado = EstadoPedido.CANCELADO;
-    }
-    
-    /**
-     * Obtiene el número total de items en el pedido
-     * @return suma de todas las cantidades
-     */
-    public Integer getTotalItems() {
-        return items.stream()
-            .mapToInt(ItemPedido::getCantidad)
-            .sum();
-    }
-    
-    /**
-     * Verifica si el pedido puede ser modificado
-     * @return true si está en estado pendiente
-     */
-    public boolean puedeSerModificado() {
-        return EstadoPedido.PENDIENTE.equals(estado);
-    }
-    
-    /**
-     * Verifica si el pedido puede ser cancelado
-     * @return true si no está confirmado, enviado o entregado
-     */
-    public boolean puedeSerCancelado() {
-        return !EstadoPedido.ENTREGADO.equals(estado) && 
-               !EstadoPedido.CANCELADO.equals(estado);
     }
 }
