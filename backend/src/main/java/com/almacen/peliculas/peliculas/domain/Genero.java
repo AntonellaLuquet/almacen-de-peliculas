@@ -11,23 +11,23 @@ package com.almacen.peliculas.peliculas.domain;
 public enum Genero {
     ACCION("Acción"),
     AVENTURA("Aventura"),
-    CIENCIA_FICCION("Ciencia Ficción"),
     COMEDIA("Comedia"),
     DRAMA("Drama"),
-    FANTASIA("Fantasía"),
     HORROR("Horror"),
-    MUSICAL("Musical"),
+    CIENCIA_FICCION("Ciencia Ficción"),
+    FANTASIA("Fantasía"),
     ROMANCE("Romance"),
     THRILLER("Thriller"),
-    WESTERN("Western"),
+    MISTERIO("Misterio"),
     DOCUMENTAL("Documental"),
     ANIMACION("Animación"),
+    MUSICAL("Musical"),
+    WESTERN("Western"),
     BIOGRAFIA("Biografía"),
     CRIMEN("Crimen"),
     FAMILIAR("Familiar"),
     GUERRA("Guerra"),
     HISTORIA("Historia"),
-    MISTERIO("Misterio"),
     DEPORTES("Deportes");
     
     private final String displayName;

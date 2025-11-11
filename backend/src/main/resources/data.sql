@@ -2,17 +2,17 @@
 
 -- Insertar usuario administrador por defecto
 INSERT INTO usuarios (email, nombre, apellido, password, rol, activo, fecha_creacion)
-VALUES ('admin@almacen.com', 'Administrador', 'Sistema', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOwk9aTUkjykTYzMkF8MZxeVGCJoQKnwG', 'ADMIN', true, CURRENT_TIMESTAMP);
+VALUES ('admin@almacen.com', 'Administrador', 'Sistema', '$2a$10$FWIz0mZftCHnZzaWLdTI1emd6eoFmnK9pS0xPp6YIReDISt3YSFqG', 'ADMIN', true, CURRENT_TIMESTAMP);
 -- Password: admin123 (encriptado con BCrypt)
 
 -- Insertar usuario cliente de prueba  
 INSERT INTO usuarios (email, nombre, apellido, password, rol, activo, telefono, direccion, fecha_creacion)
-VALUES ('cliente@test.com', 'Juan', 'Pérez', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOwk9aTUkjykTYzMkF8MZxeVGCJoQKnwG', 'CLIENTE', true, '555-1234', 'Calle Falsa 123, Ciudad', CURRENT_TIMESTAMP);
+VALUES ('cliente@test.com', 'Juan', 'Pérez', '$2a$10$FWIz0mZftCHnZzaWLdTI1emd6eoFmnK9pS0xPp6YIReDISt3YSFqG', 'CLIENTE', true, '555-1234', 'Calle Falsa 123, Ciudad', CURRENT_TIMESTAMP);
 -- Password: admin123 (encriptado con BCrypt)
 
 -- Usuario administrador con BCrypt (backup)
 INSERT INTO usuarios (email, nombre, apellido, password, rol, activo, fecha_creacion)
-VALUES ('admin2@almacen.com', 'Admin', 'Backup', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOwk9aTUkjykTYzMkF8MZxeVGCJoQKnwG', 'ADMIN', true, CURRENT_TIMESTAMP);
+VALUES ('admin2@almacen.com', 'Admin', 'Backup', '$2a$10$FWIz0mZftCHnZzaWLdTI1emd6eoFmnK9pS0xPp6YIReDISt3YSFqG', 'ADMIN', true, CURRENT_TIMESTAMP);
 -- Password: admin123
 
 -- Insertar películas de ejemplo

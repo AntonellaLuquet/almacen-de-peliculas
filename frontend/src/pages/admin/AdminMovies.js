@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, Table, Button, Modal, Form, Alert, Badge, 
-  InputGroup, Row, Col, Pagination, Image 
+import {
+  Card, Table, Button, Modal, Form, Alert, Badge,
+  InputGroup, Row, Col, Pagination, Image
 } from 'react-bootstrap';
 import peliculasService from '../../services/peliculasService';
 
@@ -19,18 +19,18 @@ const AdminMovies = () => {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-  
+
   // Paginación
   const [currentPage, setCurrentPage] = useState(1);
   const moviesPerPage = 12;
 
   // Opciones para los formularios
   const genres = [
-    'ACCION', 'AVENTURA', 'COMEDIA', 'DRAMA', 'TERROR', 'CIENCIA_FICCION',
+    'ACCION', 'AVENTURA', 'COMEDIA', 'DRAMA', 'HORROR', 'CIENCIA_FICCION',
     'FANTASIA', 'ROMANCE', 'THRILLER', 'MISTERIO', 'DOCUMENTAL', 'ANIMACION'
   ];
 
-  const classifications = ['ATP', '+13', '+16', '+18'];
+  const classifications = ['ATP', 'G', 'PG', 'PG_13', 'R', 'NC_17', 'SAM_13', 'SAM_16', 'SAM_18'];
 
   useEffect(() => {
     loadMovies();
@@ -58,16 +58,14 @@ const AdminMovies = () => {
     let filtered = movies;
 
     if (searchTerm) {
-      filtered = filtered.filter(movie => 
+      filtered = filtered.filter(movie =>
         movie.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         movie.director.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     if (genreFilter) {
-      filtered = filtered.filter(movie => 
-        movie.generos && movie.generos.includes(genreFilter)
-      );
+      filtered = filtered.filter(movie => movie.genero === genreFilter);
     }
 
     setFilteredMovies(filtered);
@@ -81,12 +79,13 @@ const AdminMovies = () => {
       director: '',
       anio: new Date().getFullYear(),
       duracion: 90,
-      generos: [],
+      genero: 'ACCION',
       clasificacion: 'ATP',
       precio: 0,
       stock: 0,
       imagenUrl: '',
-      activo: true
+      disponible: true,
+      actores: []
     });
     setIsCreating(true);
     setIsEditing(true);
@@ -110,16 +109,20 @@ const AdminMovies = () => {
   const handleSaveMovie = async (e) => {
     e.preventDefault();
     try {
+        const movieToSave = {
+          ...selectedMovie,
+          actores: selectedMovie.actores.filter(actor => actor.trim() !== '')
+        };
       if (isCreating) {
-        const newMovie = await peliculasService.createPelicula(selectedMovie);
+        const newMovie = await peliculasService.createPelicula(movieToSave);
         setMovies([newMovie, ...movies]);
       } else {
-        const updatedMovie = await peliculasService.updatePelicula(selectedMovie.id, selectedMovie);
-        setMovies(movies.map(movie => 
+        const updatedMovie = await peliculasService.updatePelicula(selectedMovie.id, movieToSave);
+        setMovies(movies.map(movie =>
           movie.id === selectedMovie.id ? updatedMovie : movie
         ));
       }
-      
+
       setShowMovieModal(false);
       setSelectedMovie(null);
       setIsCreating(false);
@@ -144,11 +147,13 @@ const AdminMovies = () => {
 
   const handleToggleMovieStatus = async (movieId, currentStatus) => {
     try {
-      const movie = movies.find(m => m.id === movieId);
-      const updatedMovie = { ...movie, activo: !currentStatus };
-      const result = await peliculasService.updatePelicula(movieId, updatedMovie);
-      
-      setMovies(movies.map(movie => 
+          const movieToUpdate = movies.find(m => m.id === movieId);
+          if (!movieToUpdate) return;
+
+          const payload = { ...movieToUpdate, disponible: !currentStatus };
+
+          const result = await peliculasService.updatePelicula(movieId, payload);
+      setMovies(movies.map(movie =>
         movie.id === movieId ? result : movie
       ));
     } catch (error) {
@@ -157,20 +162,20 @@ const AdminMovies = () => {
     }
   };
 
-  const getGenreBadges = (generos) => {
-    if (!generos || generos.length === 0) return null;
-    
-    return generos.slice(0, 2).map((genero, index) => (
-      <Badge key={index} bg="info" className="me-1">
+  const getGenreBadge = (genero) => {
+    if (!genero) return null;
+
+    return (
+      <Badge bg="info" className="me-1">
         {genero.replace('_', ' ')}
       </Badge>
-    ));
+    );
   };
 
-  const getStatusBadge = (activo) => {
+  const getStatusBadge = (disponible) => {
     return (
-      <Badge bg={activo ? 'success' : 'secondary'}>
-        {activo ? 'Activo' : 'Inactivo'}
+      <Badge bg={disponible ? 'success' : 'secondary'}>
+        {disponible ? 'Activo' : 'Inactivo'}
       </Badge>
     );
   };
@@ -252,8 +257,8 @@ const AdminMovies = () => {
               </Form.Select>
             </Col>
             <Col md={3}>
-              <Button 
-                variant="outline-primary" 
+              <Button
+                variant="outline-primary"
                 onClick={loadMovies}
                 className="w-100"
               >
@@ -278,7 +283,7 @@ const AdminMovies = () => {
                       <th>Título</th>
                       <th>Director</th>
                       <th>Año</th>
-                      <th>Géneros</th>
+                      <th>Género</th>
                       <th>Precio</th>
                       <th>Stock</th>
                       <th>Estado</th>
@@ -311,19 +316,14 @@ const AdminMovies = () => {
                         </td>
                         <td>{movie.director}</td>
                         <td>{movie.anio}</td>
-                        <td>
-                          {getGenreBadges(movie.generos)}
-                          {movie.generos && movie.generos.length > 2 && (
-                            <Badge bg="secondary">+{movie.generos.length - 2}</Badge>
-                          )}
-                        </td>
+                        <td>{getGenreBadge(movie.genero)}</td>
                         <td>{formatCurrency(movie.precio)}</td>
                         <td>
                           <Badge bg={movie.stock > 0 ? 'success' : 'danger'}>
                             {movie.stock} unidades
                           </Badge>
                         </td>
-                        <td>{getStatusBadge(movie.activo)}</td>
+                        <td>{getStatusBadge(movie.disponible)}</td>
                         <td>
                           <div className="btn-group btn-group-sm" role="group">
                             <Button
@@ -341,11 +341,11 @@ const AdminMovies = () => {
                               <i className="bi bi-pencil"></i>
                             </Button>
                             <Button
-                              variant={movie.activo ? "outline-secondary" : "outline-success"}
-                              onClick={() => handleToggleMovieStatus(movie.id, movie.activo)}
-                              title={movie.activo ? "Desactivar" : "Activar"}
+                              variant={movie.disponible ? "outline-secondary" : "outline-success"}
+                              onClick={() => handleToggleMovieStatus(movie.id, movie.disponible)}
+                              title={movie.disponible ? "Desactivar" : "Activar"}
                             >
-                              <i className={`bi bi-${movie.activo ? 'eye-slash' : 'eye'}`}></i>
+                              <i className={`bi bi-${movie.disponible ? 'eye-slash' : 'eye'}`}></i>
                             </Button>
                             <Button
                               variant="outline-danger"
@@ -366,15 +366,15 @@ const AdminMovies = () => {
               {totalPages > 1 && (
                 <div className="d-flex justify-content-center mt-4">
                   <Pagination>
-                    <Pagination.First 
+                    <Pagination.First
                       disabled={currentPage === 1}
                       onClick={() => setCurrentPage(1)}
                     />
-                    <Pagination.Prev 
+                    <Pagination.Prev
                       disabled={currentPage === 1}
                       onClick={() => setCurrentPage(prev => prev - 1)}
                     />
-                    
+
                     {[...Array(Math.min(5, totalPages))].map((_, idx) => {
                       const pageNumber = Math.max(1, currentPage - 2) + idx;
                       if (pageNumber <= totalPages) {
@@ -390,12 +390,12 @@ const AdminMovies = () => {
                       }
                       return null;
                     })}
-                    
-                    <Pagination.Next 
+
+                    <Pagination.Next
                       disabled={currentPage === totalPages}
                       onClick={() => setCurrentPage(prev => prev + 1)}
                     />
-                    <Pagination.Last 
+                    <Pagination.Last
                       disabled={currentPage === totalPages}
                       onClick={() => setCurrentPage(totalPages)}
                     />
@@ -473,6 +473,28 @@ const AdminMovies = () => {
                 />
               </Form.Group>
 
+              {/* MODIFICADO: Se añade el campo para actores */}
+              <Form.Group className="mb-3">
+                <Form.Label>Actores</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ej: Tom Hanks, Julia Roberts, ..."
+                  value={selectedMovie.actores ? selectedMovie.actores.join(', ') : ''}
+                  onChange={(e) => {
+                    const actoresFromInput = e.target.value.split(',');
+                    const actoresArray = actoresFromInput.map(actor => actor.trim());
+                    setSelectedMovie({
+                      ...selectedMovie,
+                      actores: actoresArray
+                    });
+                  }}
+                  disabled={!isEditing}
+                />
+                <Form.Text className="text-muted">
+                  Separe los nombres de los actores con comas.
+                </Form.Text>
+              </Form.Group>
+
               <Row>
                 <Col md={4}>
                   <Form.Group className="mb-3">
@@ -529,29 +551,22 @@ const AdminMovies = () => {
               </Row>
 
               <Form.Group className="mb-3">
-                <Form.Label>Géneros</Form.Label>
-                <div className="d-flex flex-wrap gap-2">
+                <Form.Label>Género *</Form.Label>
+                <Form.Select
+                  value={selectedMovie.genero}
+                  onChange={(e) => setSelectedMovie({
+                    ...selectedMovie,
+                    genero: e.target.value
+                  })}
+                  disabled={!isEditing}
+                  required
+                >
                   {genres.map(genre => (
-                    <Form.Check
-                      key={genre}
-                      type="checkbox"
-                      id={`genre-${genre}`}
-                      label={genre.replace('_', ' ')}
-                      checked={selectedMovie.generos && selectedMovie.generos.includes(genre)}
-                      onChange={(e) => {
-                        const currentGenres = selectedMovie.generos || [];
-                        const newGenres = e.target.checked
-                          ? [...currentGenres, genre]
-                          : currentGenres.filter(g => g !== genre);
-                        setSelectedMovie({
-                          ...selectedMovie,
-                          generos: newGenres
-                        });
-                      }}
-                      disabled={!isEditing}
-                    />
+                    <option key={genre} value={genre}>
+                      {genre.replace('_', ' ')}
+                    </option>
                   ))}
-                </div>
+                </Form.Select>
               </Form.Group>
 
               <Row>
@@ -595,10 +610,10 @@ const AdminMovies = () => {
                   <Form.Group className="mb-3">
                     <Form.Label>Estado</Form.Label>
                     <Form.Select
-                      value={selectedMovie.activo ? 'true' : 'false'}
+                      value={selectedMovie.disponible ? 'true' : 'false'}
                       onChange={(e) => setSelectedMovie({
                         ...selectedMovie,
-                        activo: e.target.value === 'true'
+                        disponible: e.target.value === 'true'
                       })}
                       disabled={!isEditing}
                     >
@@ -625,8 +640,8 @@ const AdminMovies = () => {
 
               {isEditing && (
                 <div className="d-flex justify-content-end gap-2">
-                  <Button 
-                    variant="secondary" 
+                  <Button
+                    variant="secondary"
                     onClick={() => setShowMovieModal(false)}
                   >
                     Cancelar
