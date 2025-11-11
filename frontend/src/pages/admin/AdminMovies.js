@@ -295,13 +295,13 @@ const AdminMovies = () => {
                       <tr key={movie.id}>
                         <td>
                           <Image
-                            src={movie.imagenUrl || '/placeholder-movie.jpg'}
+                            src={movie.imagenUrl || '/placeholder-movie.svg'}
                             alt={movie.titulo}
                             width="60"
                             height="80"
                             className="object-fit-cover rounded"
                             onError={(e) => {
-                              e.target.src = '/placeholder-movie.jpg';
+                              e.target.src = '/placeholder-movie.svg';
                             }}
                           />
                         </td>
