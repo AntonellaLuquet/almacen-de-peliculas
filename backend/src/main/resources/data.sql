@@ -17,7 +17,7 @@ VALUES ('TESTUSER9052358849520235020@testuser.com', 'Buyer', 'Test User', '$2y$1
 
 -- Usuario administrador con BCrypt (backup)
 INSERT INTO usuarios (email, nombre, apellido, password, rol, activo, fecha_creacion)
-VALUES ('admin2@almacen.com', 'Admin', 'Backup', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOwk9aTUkjykTYzMkF8MZxeVGCJoQKnwG', 'ADMIN', true, CURRENT_TIMESTAMP);
+VALUES ('admin2@almacen.com', 'Admin', 'Backup', '$2a$10$FWIz0mZftCHnZzaWLdTI1emd6eoFmnK9pS0xPp6YIReDISt3YSFqG', 'ADMIN', true, CURRENT_TIMESTAMP);
 -- Password: admin123
 
 -- Insertar películas de ejemplo

@@ -38,7 +38,9 @@ public class ActualizarPeliculaDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor a 0")
     @Digits(integer = 8, fraction = 2, message = "El precio debe tener máximo 8 dígitos enteros y 2 decimales")
     private BigDecimal precio;
-    
+
+    private Integer stock;
+
     @Size(max = 500, message = "La URL de imagen no debe superar los 500 caracteres")
     private String imagenUrl;
     
@@ -116,7 +118,15 @@ public class ActualizarPeliculaDTO {
     public void setPrecio(BigDecimal precio) {
         this.precio = precio;
     }
-    
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
     public String getImagenUrl() {
         return imagenUrl;
     }
