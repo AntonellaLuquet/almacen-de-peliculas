@@ -9,4 +9,9 @@ public interface PedidoQueryService {
     List<Pedido> buscarPedidosPorUsuarioAutenticado();
 
     Pedido buscarPedidoPorId(Long id);
+
+    List<Pedido> buscarTodosLosPedidos();
+
+    Pedido buscarPedidoPorIdParaAdmin(Long id);
+
 }

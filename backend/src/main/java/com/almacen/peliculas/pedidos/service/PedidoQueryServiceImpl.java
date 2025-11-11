@@ -34,4 +34,20 @@ public class PedidoQueryServiceImpl implements PedidoQueryService {
         return pedidoRepository.findByIdAndUsuarioId(id, usuario.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado o no pertenece al usuario"));
     }
+
+    // --- AÑADIR ESTE MÉTODO PARA VER PEDIDOS---
+    @Override
+    public List<Pedido> buscarTodosLosPedidos() {
+        // Aquí usamos el nuevo método del repositorio
+        return pedidoRepository.findAllByOrderByFechaCreacionDesc();
+    }
+
+    @Override
+    public Pedido buscarPedidoPorIdParaAdmin(Long id) {
+        return pedidoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado"));
+    }
+
+
+
 }

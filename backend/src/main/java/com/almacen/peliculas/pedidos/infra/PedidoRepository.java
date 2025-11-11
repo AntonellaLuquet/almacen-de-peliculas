@@ -1,5 +1,7 @@
 package com.almacen.peliculas.pedidos.infra;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.almacen.peliculas.pedidos.domain.Pedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +13,12 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     List<Pedido> findByUsuarioIdOrderByFechaCreacionDesc(Long usuarioId);
 
     Optional<Pedido> findByIdAndUsuarioId(Long id, Long usuarioId);
+
+    // --- AÑADIR ESTE MÉTODO PARA VER PEDIDOS---
+    /**
+     * Busca todos los pedidos y los ordena por fecha de creación descendente.
+     * Ideal para paneles de administración.
+     * @return Una lista de todos los pedidos.
+     */
+    List<Pedido> findAllByOrderByFechaCreacionDesc();
 }

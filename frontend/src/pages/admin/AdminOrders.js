@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, Table, Button, Modal, Alert, Badge, 
-  InputGroup, Row, Col, Pagination, Form 
+import {
+  Card, Table, Button, Modal, Alert, Badge,
+  InputGroup, Row, Col, Pagination, Form
 } from 'react-bootstrap';
 import pedidoService from '../../services/pedidoService';
 
@@ -17,7 +17,7 @@ const AdminOrders = () => {
   const [statusFilter, setStatusFilter] = useState('');
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  
+
   // Paginación
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 15;
@@ -38,9 +38,10 @@ const AdminOrders = () => {
       setLoading(true);
       const orderData = await pedidoService.getAllPedidos();
       // Ordenar por fecha más reciente primero
-      const sortedOrders = orderData.sort((a, b) => 
+      const sortedOrders = orderData.sort((a, b) =>
         new Date(b.fechaPedido) - new Date(a.fechaPedido)
       );
+
       setOrders(sortedOrders);
     } catch (error) {
       console.error('Error loading orders:', error);
@@ -54,7 +55,7 @@ const AdminOrders = () => {
     let filtered = orders;
 
     if (searchTerm) {
-      filtered = filtered.filter(order => 
+      filtered = filtered.filter(order =>
         order.id.toString().includes(searchTerm) ||
         order.usuario.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.usuario.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -62,7 +63,7 @@ const AdminOrders = () => {
     }
 
     if (statusFilter) {
-      filtered = filtered.filter(order => order.estadoPedido === statusFilter);
+      filtered = filtered.filter(order => order.estado === statusFilter);
     }
 
     setFilteredOrders(filtered);
@@ -82,14 +83,14 @@ const AdminOrders = () => {
 
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
     try {
-      await pedidoService.updateEstadoPedido(orderId, newStatus);
-      setOrders(orders.map(order => 
-        order.id === orderId ? { ...order, estadoPedido: newStatus } : order
+      await pedidoService.updateestado(orderId, newStatus);
+      setOrders(orders.map(order =>
+        order.id === orderId ? { ...order, estado: newStatus } : order
       ));
-      
+
       // Si el modal está abierto y es este pedido, actualizarlo también
       if (selectedOrder && selectedOrder.id === orderId) {
-        setSelectedOrder({ ...selectedOrder, estadoPedido: newStatus });
+        setSelectedOrder({ ...selectedOrder, estado: newStatus });
       }
     } catch (error) {
       console.error('Error updating order status:', error);
@@ -118,13 +119,13 @@ const AdminOrders = () => {
   const calculateOrderStats = () => {
     const stats = {
       total: orders.length,
-      pendientes: orders.filter(o => o.estadoPedido === 'PENDIENTE').length,
-      procesando: orders.filter(o => o.estadoPedido === 'PROCESANDO').length,
-      enviados: orders.filter(o => o.estadoPedido === 'ENVIADO').length,
-      entregados: orders.filter(o => o.estadoPedido === 'ENTREGADO').length,
-      cancelados: orders.filter(o => o.estadoPedido === 'CANCELADO').length,
+      pendientes: orders.filter(o => o.estado === 'PENDIENTE').length,
+      procesando: orders.filter(o => o.estado === 'PROCESANDO').length,
+      enviados: orders.filter(o => o.estado === 'ENVIADO').length,
+      entregados: orders.filter(o => o.estado === 'ENTREGADO').length,
+      cancelados: orders.filter(o => o.estado === 'CANCELADO').length,
       totalRevenue: orders
-        .filter(o => o.estadoPedido === 'ENTREGADO')
+        .filter(o => o.estado === 'ENTREGADO')
         .reduce((sum, order) => sum + order.total, 0)
     };
     return stats;
@@ -248,8 +249,8 @@ const AdminOrders = () => {
               </Form.Select>
             </Col>
             <Col md={3}>
-              <Button 
-                variant="outline-primary" 
+              <Button
+                variant="outline-primary"
                 onClick={loadOrders}
                 className="w-100"
               >
@@ -310,10 +311,10 @@ const AdminOrders = () => {
                         </td>
                         <td>
                           <div className="d-flex flex-column gap-1">
-                            {getStatusBadge(order.estadoPedido)}
+                            {getStatusBadge(order.estado)}
                             <Form.Select
                               size="sm"
-                              value={order.estadoPedido}
+                              value={order.estado}
                               onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
                               style={{ fontSize: '0.75rem' }}
                             >
@@ -350,15 +351,15 @@ const AdminOrders = () => {
               {totalPages > 1 && (
                 <div className="d-flex justify-content-center mt-4">
                   <Pagination>
-                    <Pagination.First 
+                    <Pagination.First
                       disabled={currentPage === 1}
                       onClick={() => setCurrentPage(1)}
                     />
-                    <Pagination.Prev 
+                    <Pagination.Prev
                       disabled={currentPage === 1}
                       onClick={() => setCurrentPage(prev => prev - 1)}
                     />
-                    
+
                     {[...Array(Math.min(5, totalPages))].map((_, idx) => {
                       const pageNumber = Math.max(1, currentPage - 2) + idx;
                       if (pageNumber <= totalPages) {
@@ -374,12 +375,12 @@ const AdminOrders = () => {
                       }
                       return null;
                     })}
-                    
-                    <Pagination.Next 
+
+                    <Pagination.Next
                       disabled={currentPage === totalPages}
                       onClick={() => setCurrentPage(prev => prev + 1)}
                     />
-                    <Pagination.Last 
+                    <Pagination.Last
                       disabled={currentPage === totalPages}
                       onClick={() => setCurrentPage(totalPages)}
                     />
@@ -420,7 +421,7 @@ const AdminOrders = () => {
                     </Col>
                     <Col md={6}>
                       <p><strong>Fecha del Pedido:</strong> {new Date(selectedOrder.fechaPedido).toLocaleString('es-ES')}</p>
-                      <p><strong>Estado:</strong> {getStatusBadge(selectedOrder.estadoPedido)}</p>
+                      <p><strong>Estado:</strong> {getStatusBadge(selectedOrder.estado)}</p>
                       <p><strong>Método de Pago:</strong> {selectedOrder.metodoPago || 'N/A'}</p>
                     </Col>
                   </Row>
@@ -505,7 +506,7 @@ const AdminOrders = () => {
                       <Form.Group>
                         <Form.Label>Nuevo Estado</Form.Label>
                         <Form.Select
-                          value={selectedOrder.estadoPedido}
+                          value={selectedOrder.estado}
                           onChange={(e) => {
                             handleUpdateOrderStatus(selectedOrder.id, e.target.value);
                           }}
