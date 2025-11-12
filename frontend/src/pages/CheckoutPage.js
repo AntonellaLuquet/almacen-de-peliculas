@@ -105,7 +105,7 @@ const CheckoutPage = () => {
   const renderOrderItem = (item) => (
     <ListGroup.Item key={item.id} className="d-flex justify-content-between align-items-center">
       <div className="d-flex align-items-center">
-        <img src={item.pelicula.posterUrl || '/images/no-poster.jpg'} alt={item.pelicula.titulo} className="rounded me-3" style={{ width: '50px', height: '70px', objectFit: 'cover' }} />
+        <img src={item.pelicula.imagenUrl || '/images/no-poster.jpg'} alt={item.pelicula.titulo} className="rounded me-3" style={{ width: '50px', height: '70px', objectFit: 'cover' }} />
         <div>
           <h6 className="mb-1">{item.pelicula.titulo}</h6>
           <small className="text-muted">Cantidad: {item.cantidad}</small>

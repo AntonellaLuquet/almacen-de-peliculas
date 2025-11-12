@@ -101,7 +101,7 @@ const CartPage = () => {
         {/* Imagen de la película */}
         <Col md={2} className="text-center mb-3 mb-md-0">
           <img
-            src={item.pelicula.posterUrl || '/images/no-poster.jpg'}
+            src={item.pelicula.imagenUrl || '/images/no-poster.jpg'}
             alt={item.pelicula.titulo}
             className="img-fluid rounded"
             style={{ maxHeight: '120px', maxWidth: '80px' }}

@@ -181,7 +181,7 @@ const CatalogPage = () => {
       <div className="position-relative">
         <Card.Img 
           variant="top" 
-          src={pelicula.posterUrl || '/images/no-poster.jpg'} 
+          src={pelicula.imagenUrl || '/images/no-poster.jpg'} 
           alt={pelicula.titulo}
           className="movie-poster"
         />

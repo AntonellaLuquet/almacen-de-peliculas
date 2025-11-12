@@ -114,6 +114,15 @@ const usuarioService = {
   obtenerEstadisticas: async () => {
     const response = await apiClient.get('/usuarios/estadisticas');
     return response.data;
+  },
+
+  /**
+   * Obtiene todos los usuarios (solo admin) - usa listarUsuarios con tamaño grande
+   * @returns {Promise} - Promesa con lista de todos los usuarios
+   */
+  getAllUsuarios: async () => {
+    const response = await usuarioService.listarUsuarios({ size: 1000 });
+    return response.content || response; // Devuelve el contenido de la página
   }
 };
 

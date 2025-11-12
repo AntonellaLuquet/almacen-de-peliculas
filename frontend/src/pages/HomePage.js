@@ -67,7 +67,7 @@ const HomePage = () => {
     <Card key={pelicula.id} className="movie-card h-100 fade-in">
       <Card.Img 
         variant="top" 
-        src={pelicula.posterUrl || '/images/no-poster.jpg'} 
+        src={pelicula.imagenUrl || '/images/no-poster.jpg'} 
         alt={pelicula.titulo}
         className="movie-poster"
         style={{ height: '300px', objectFit: 'cover' }}
@@ -189,7 +189,7 @@ const HomePage = () => {
                       <Card className="text-center border-0 shadow">
                         <Card.Img 
                           variant="top"
-                          src={pelicula.posterUrl || '/images/no-poster.jpg'}
+                          src={pelicula.imagenUrl || '/images/no-poster.jpg'}
                           alt={pelicula.titulo}
                           style={{ height: '400px', objectFit: 'cover' }}
                         />
