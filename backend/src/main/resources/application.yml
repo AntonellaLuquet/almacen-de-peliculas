@@ -85,6 +85,7 @@ cors:
 # Configuración de la aplicación
 app:
   base-url: ${APP_BASE_URL:http://localhost:8081}
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}
   upload:
     dir: ${UPLOAD_DIR:uploads/}
   pagination:

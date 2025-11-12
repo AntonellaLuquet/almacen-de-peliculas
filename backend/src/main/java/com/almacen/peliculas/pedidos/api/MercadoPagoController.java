@@ -4,8 +4,6 @@ import com.almacen.peliculas.pedidos.domain.Pedido;
 import com.almacen.peliculas.pedidos.domain.dto.CheckoutDTO;
 import com.almacen.peliculas.pedidos.service.MercadoPagoWebhookService;
 import com.almacen.peliculas.pedidos.service.PedidoService;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.*;
 import com.mercadopago.exceptions.MPApiException;
@@ -27,13 +25,15 @@ import java.util.Map;
 public class MercadoPagoController {
 
     private static final Logger logger = LoggerFactory.getLogger(MercadoPagoController.class);
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Value("${mercadopago.access-token}")
     private String accessToken;
 
     @Value("${app.base-url:http://localhost:8081}")
     private String appBaseUrl;
+
+    @Value("${app.frontend-url:http://localhost:3000}")
+    private String frontendUrl;
 
     private final PedidoService pedidoService;
     private final MercadoPagoWebhookService webhookService;
@@ -79,6 +79,13 @@ public class MercadoPagoController {
             String notificationUrl = appBaseUrl + "/api/payments/mercadopago/webhook";
             logger.info("URL de notificación configurada: {}", notificationUrl);
 
+            // Construir las URLs de retorno
+            String successUrl = frontendUrl + "/checkout/success";
+            String failureUrl = frontendUrl + "/checkout/failure";
+            String pendingUrl = frontendUrl + "/checkout/pending";
+            
+            logger.info("URLs de retorno - Success: {}, Failure: {}, Pending: {}", successUrl, failureUrl, pendingUrl);
+
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(preferenceItems)
                     .payer(payer)
@@ -86,15 +93,17 @@ public class MercadoPagoController {
                     .externalReference(pedido.getId().toString())
                     .backUrls(
                             PreferenceBackUrlsRequest.builder()
-                                    .success("http://localhost:3000/checkout/success")
-                                    .failure("http://localhost:3000/checkout/failure")
-                                    .pending("http://localhost:3000/checkout/pending")
+                                    .success(successUrl)
+                                    .failure(failureUrl)
+                                    .pending(pendingUrl)
                                     .build()
                     )
-                    .autoReturn("approved")
+                    // No usar autoReturn con localhost - MercadoPago no lo acepta en modo prueba
+                    // .autoReturn("approved")
                     .build();
 
-            logger.info("Enviando la siguiente solicitud a Mercado Pago: \n{}", gson.toJson(preferenceRequest));
+            // logger.info("Enviando la siguiente solicitud a Mercado Pago: \n{}", gson.toJson(preferenceRequest));
+            logger.info("Creando preferencia de pago para pedido ID: {}", pedido.getId());
 
             PreferenceClient client = new PreferenceClient();
             Preference preference = client.create(preferenceRequest);
