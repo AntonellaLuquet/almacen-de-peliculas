@@ -12,7 +12,8 @@ const CatalogPage = () => {
   const { addItem, isInCart, getItemQuantity } = useCart();
 
   // Estado de películas y paginación
-  const [peliculas, setPeliculas] = useState([]);
+  const [todasPeliculas, setTodasPeliculas] = useState([]);
+  const [peliculasFiltradas, setPeliculasFiltradas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
@@ -37,8 +38,37 @@ const CatalogPage = () => {
   const [pageSize] = useState(12);
 
   // Opciones para filtros
-  const generos = ['Acción', 'Comedia', 'Drama', 'Terror', 'Ciencia Ficción', 'Romance', 'Aventura', 'Thriller', 'Animación', 'Documental'];
-  const clasificaciones = ['G', 'PG', 'PG-13', 'R', 'NC-17'];
+  // Mapeo de géneros para mostrar y enviar al backend
+  const generoOptions = [
+    { label: 'Acción', value: 'ACCION' },
+    { label: 'Aventura', value: 'AVENTURA' },
+    { label: 'Comedia', value: 'COMEDIA' },
+    { label: 'Drama', value: 'DRAMA' },
+    { label: 'Horror', value: 'HORROR' },
+    { label: 'Ciencia Ficción', value: 'CIENCIA_FICCION' },
+    { label: 'Fantasía', value: 'FANTASIA' },
+    { label: 'Romance', value: 'ROMANCE' },
+    { label: 'Thriller', value: 'THRILLER' },
+    { label: 'Misterio', value: 'MISTERIO' },
+    { label: 'Documental', value: 'DOCUMENTAL' },
+    { label: 'Animación', value: 'ANIMACION' },
+    { label: 'Musical', value: 'MUSICAL' },
+    { label: 'Western', value: 'WESTERN' },
+    { label: 'Biografía', value: 'BIOGRAFIA' },
+    { label: 'Crimen', value: 'CRIMEN' },
+    { label: 'Familiar', value: 'FAMILIAR' },
+    { label: 'Guerra', value: 'GUERRA' },
+    { label: 'Historia', value: 'HISTORIA' },
+    { label: 'Deportes', value: 'DEPORTES' }
+  ];
+  // Mapeo de clasificaciones para mostrar y enviar al backend
+  const clasificacionOptions = [
+    { label: 'G', value: 'G' },
+    { label: 'PG', value: 'PG' },
+    { label: 'PG-13', value: 'PG_13' },
+    { label: 'R', value: 'R' },
+    { label: 'NC-17', value: 'NC_17' }
+  ];
   const sortOptions = [
     { value: 'fechaCreacion|desc', label: 'Más recientes' },
     { value: 'fechaCreacion|asc', label: 'Más antiguos' },
@@ -53,40 +83,84 @@ const CatalogPage = () => {
   /**
    * Carga las películas según los filtros actuales
    */
-  const cargarPeliculas = async () => {
+  // Cargar todas las películas una sola vez
+  const cargarTodasPeliculas = async () => {
     try {
       setLoading(true);
       setError(null);
-
-      const params = {
-        page: currentPage,
-        size: pageSize,
-        sortBy: filtros.sortBy,
-        sortDir: filtros.sortDir
-      };
-
-      // Agregar filtros no vacíos
-      if (filtros.search) params.search = filtros.search;
-      if (filtros.genero) params.genero = filtros.genero;
-      if (filtros.clasificacion) params.clasificacion = filtros.clasificacion;
-      if (filtros.anioMin) params.anioMin = filtros.anioMin;
-      if (filtros.anioMax) params.anioMax = filtros.anioMax;
-      if (filtros.precioMin) params.precioMin = filtros.precioMin;
-      if (filtros.precioMax) params.precioMax = filtros.precioMax;
-      if (filtros.puntuacionMin) params.puntuacionMin = filtros.puntuacionMin;
-
-      const response = await peliculasService.buscarConFiltros(filtros, params);
-      
-      setPeliculas(response.content || []);
-      setTotalPages(response.totalPages || 0);
-      setTotalElements(response.totalElements || 0);
-      
+      // Trae todas las películas sin filtros
+  const response = await peliculasService.obtenerPeliculas();
+  // Si la respuesta es paginada, usar response.content; si es array, usar directamente
+  const peliculasArray = Array.isArray(response) ? response : response.content || [];
+  setTodasPeliculas(peliculasArray);
     } catch (error) {
       console.error('Error al cargar películas:', error);
       setError('Error al cargar el catálogo de películas');
     } finally {
       setLoading(false);
     }
+  };
+
+  // Aplica los filtros en el frontend
+  const aplicarFiltrosFrontend = () => {
+    let filtradas = [...todasPeliculas];
+    // Filtro de búsqueda
+    if (filtros.search) {
+      const searchLower = filtros.search.toLowerCase();
+      filtradas = filtradas.filter(p =>
+        p.titulo?.toLowerCase().includes(searchLower) ||
+        p.director?.toLowerCase().includes(searchLower) ||
+        (p.actores && p.actores.some(a => a.toLowerCase().includes(searchLower)))
+      );
+    }
+    // Género
+    if (filtros.genero) {
+      const generoFiltro = filtros.genero.toLowerCase().replace(/\s|_/g, '');
+      filtradas = filtradas.filter(p =>
+        p.generos && p.generos.some(g =>
+          g && g.toLowerCase().replace(/\s|_/g, '') === generoFiltro
+        )
+      );
+    }
+    // Clasificación
+    if (filtros.clasificacion) {
+      filtradas = filtradas.filter(p => p.clasificacion === filtros.clasificacion);
+    }
+    // Año
+    if (filtros.anioMin) {
+      filtradas = filtradas.filter(p => p.anio >= parseInt(filtros.anioMin));
+    }
+    if (filtros.anioMax) {
+      filtradas = filtradas.filter(p => p.anio <= parseInt(filtros.anioMax));
+    }
+    // Precio
+    if (filtros.precioMin) {
+      filtradas = filtradas.filter(p => p.precio >= parseFloat(filtros.precioMin));
+    }
+    if (filtros.precioMax) {
+      filtradas = filtradas.filter(p => p.precio <= parseFloat(filtros.precioMax));
+    }
+    // Puntuación mínima
+    if (filtros.puntuacionMin) {
+      filtradas = filtradas.filter(p => p.puntuacion >= parseFloat(filtros.puntuacionMin));
+    }
+    // Ordenamiento
+    const sortKey = filtros.sortBy;
+    const sortDir = filtros.sortDir;
+    filtradas.sort((a, b) => {
+      let valA = a[sortKey];
+      let valB = b[sortKey];
+      if (valA == null) valA = '';
+      if (valB == null) valB = '';
+      if (typeof valA === 'string') valA = valA.toLowerCase();
+      if (typeof valB === 'string') valB = valB.toLowerCase();
+      if (valA < valB) return sortDir === 'asc' ? -1 : 1;
+      if (valA > valB) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+    setPeliculasFiltradas(filtradas);
+    setTotalElements(filtradas.length);
+    setTotalPages(Math.ceil(filtradas.length / pageSize));
   };
 
   /**
@@ -268,9 +342,15 @@ const CatalogPage = () => {
   );
 
   // Efectos
+  // Cargar todas las películas al montar
   useEffect(() => {
-    cargarPeliculas();
-  }, [currentPage, filtros.sortBy, filtros.sortDir]);
+    cargarTodasPeliculas();
+  }, []);
+
+  // Aplica los filtros cada vez que cambian los filtros o las películas
+  useEffect(() => {
+    aplicarFiltrosFrontend();
+  }, [filtros, todasPeliculas]);
 
   useEffect(() => {
     updateSearchParams();
@@ -318,8 +398,8 @@ const CatalogPage = () => {
                   onChange={(e) => handleFilterChange('genero', e.target.value)}
                 >
                   <option value="">Todos los géneros</option>
-                  {generos.map(genero => (
-                    <option key={genero} value={genero}>{genero}</option>
+                  {generoOptions.map(g => (
+                    <option key={g.value} value={g.value}>{g.label}</option>
                   ))}
                 </Form.Select>
               </Form.Group>
@@ -332,8 +412,8 @@ const CatalogPage = () => {
                   onChange={(e) => handleFilterChange('clasificacion', e.target.value)}
                 >
                   <option value="">Todas las clasificaciones</option>
-                  {clasificaciones.map(clasificacion => (
-                    <option key={clasificacion} value={clasificacion}>{clasificacion}</option>
+                  {clasificacionOptions.map(c => (
+                    <option key={c.value} value={c.value}>{c.label}</option>
                   ))}
                 </Form.Select>
               </Form.Group>
@@ -459,7 +539,7 @@ const CatalogPage = () => {
           )}
 
           {/* Sin resultados */}
-          {!loading && peliculas.length === 0 && !error && (
+          {!loading && peliculasFiltradas.length === 0 && !error && (
             <div className="text-center py-5">
               <i className="bi bi-search display-1 text-muted"></i>
               <h4 className="mt-3">No se encontraron películas</h4>
@@ -473,14 +553,16 @@ const CatalogPage = () => {
           )}
 
           {/* Grid de películas */}
-          {!loading && peliculas.length > 0 && (
+          {!loading && peliculasFiltradas.length > 0 && (
             <>
               <Row>
-                {peliculas.map(pelicula => (
-                  <Col key={pelicula.id} xl={3} lg={4} md={6} className="mb-4">
-                    {renderMovieCard(pelicula)}
-                  </Col>
-                ))}
+                {peliculasFiltradas
+                  .slice(currentPage * pageSize, (currentPage + 1) * pageSize)
+                  .map(pelicula => (
+                    <Col key={pelicula.id} xl={3} lg={4} md={6} className="mb-4">
+                      {renderMovieCard(pelicula)}
+                    </Col>
+                  ))}
               </Row>
 
               {/* Paginación */}
@@ -496,7 +578,6 @@ const CatalogPage = () => {
                         disabled={currentPage === 0}
                         onClick={() => handlePageChange(currentPage - 1)}
                       />
-                      
                       {[...Array(Math.min(5, totalPages))].map((_, index) => {
                         const page = Math.max(0, Math.min(totalPages - 5, currentPage - 2)) + index;
                         return (
@@ -509,7 +590,6 @@ const CatalogPage = () => {
                           </Pagination.Item>
                         );
                       })}
-                      
                       <Pagination.Next 
                         disabled={currentPage >= totalPages - 1}
                         onClick={() => handlePageChange(currentPage + 1)}
