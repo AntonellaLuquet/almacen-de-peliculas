@@ -68,7 +68,7 @@ const OrdersPage = () => {
     <tr key={item.id}>
       <td>
         <div className="d-flex align-items-center">
-          <img src={item.pelicula?.posterUrl || '/images/no-poster.jpg'} alt={item.pelicula?.titulo} className="rounded me-3" style={{ width: '50px', height: '70px', objectFit: 'cover' }} />
+          <img src={item.pelicula?.imagenUrl || '/images/no-poster.jpg'} alt={item.pelicula?.titulo} className="rounded me-3" style={{ width: '50px', height: '70px', objectFit: 'cover' }} />
           <div>
             <h6 className="mb-0">{item.tituloPelicula}</h6>
             <small className="text-muted">{item.anioPelicula}</small>

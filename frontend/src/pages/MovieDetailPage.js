@@ -191,7 +191,7 @@ const MovieDetailPage = () => {
           <Card className="shadow">
             <Card.Img 
               variant="top"
-              src={pelicula.posterUrl || '/images/no-poster.jpg'}
+              src={pelicula.imagenUrl || '/images/no-poster.jpg'}
               alt={pelicula.titulo}
               className="movie-detail-poster"
             />
