@@ -34,8 +34,10 @@ const AdminUsers = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      const userData = await usuarioService.getAllUsuarios();
-      setUsers(userData);
+      const userData = await usuarioService.listarUsuarios();
+      // Normalizar: si la respuesta tiene 'content', usar ese array
+      const usersArray = Array.isArray(userData) ? userData : (userData.content || []);
+      setUsers(usersArray);
     } catch (error) {
       console.error('Error loading users:', error);
       setError('Error al cargar los usuarios');
@@ -45,7 +47,8 @@ const AdminUsers = () => {
   };
 
   const filterUsers = () => {
-    let filtered = users;
+    // Aseguramos que users sea un array
+    let filtered = Array.isArray(users) ? users : [];
 
     if (searchTerm) {
       filtered = filtered.filter(user => 
@@ -136,10 +139,11 @@ const AdminUsers = () => {
   };
 
   // Paginación
+  const safeFilteredUsers = Array.isArray(filteredUsers) ? filteredUsers : [];
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  const currentUsers = safeFilteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(safeFilteredUsers.length / usersPerPage);
 
   if (loading) {
     return (
@@ -192,7 +196,7 @@ const AdminUsers = () => {
               >
                 <option value="">Todos los roles</option>
                 <option value="ADMIN">Administradores</option>
-                <option value="USUARIO">Usuarios</option>
+                <option value="CLIENTE">Clientes</option>
                 <option value="MODERADOR">Moderadores</option>
               </Form.Select>
             </Col>
@@ -391,7 +395,7 @@ const AdminUsers = () => {
                       })}
                       disabled={!isEditing}
                     >
-                      <option value="USUARIO">Usuario</option>
+                      <option value="CLIENTE">Cliente</option>
                       <option value="MODERADOR">Moderador</option>
                       <option value="ADMIN">Administrador</option>
                     </Form.Select>

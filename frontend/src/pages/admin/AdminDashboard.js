@@ -58,7 +58,7 @@ const AdminDashboard = () => {
       
       // Cargar estadísticas básicas
       const [users, movies, orders] = await Promise.all([
-        usuarioService.getAllUsuarios(),
+        usuarioService.listarUsuarios(),
         peliculasService.searchPeliculas({}),
         pedidoService.getAllPedidos()
       ]);
