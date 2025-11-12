@@ -118,7 +118,7 @@ public class JwtUtil {
      * @param token token JWT
      * @return true si el token ha expirado
      */
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
     
