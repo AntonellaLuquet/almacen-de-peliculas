@@ -51,21 +51,23 @@ const AdminStats = () => {
       setLoading(true);
       
       const [users, movies, orders] = await Promise.all([
-        usuarioService.getAllUsuarios(),
+        usuarioService.listarUsuarios(),
         peliculasService.searchPeliculas({}),
         pedidoService.getAllPedidos()
       ]);
 
+      const usersArray = users.content || users || [];
       const moviesArray = movies.content || movies || [];
-      
+      const ordersArray = orders.content || orders || [];
+
       // Calcular estadísticas de usuarios
-      const userStats = calculateUserStats(users);
+      const userStats = calculateUserStats(usersArray);
       
       // Calcular estadísticas de películas
       const movieStats = calculateMovieStats(moviesArray);
       
       // Calcular estadísticas de pedidos
-      const orderStats = calculateOrderStats(orders);
+      const orderStats = calculateOrderStats(ordersArray);
       
       // Calcular métricas de rendimiento
       const performanceMetrics = calculatePerformanceMetrics(users, orders);
@@ -140,16 +142,16 @@ const AdminStats = () => {
 
   const calculateOrderStats = (orders) => {
     const ordersByStatus = orders.reduce((acc, order) => {
-      acc[order.estadoPedido] = (acc[order.estadoPedido] || 0) + 1;
+      acc[order.estado] = (acc[order.estado] || 0) + 1;
       return acc;
     }, {});
 
-    const completedOrders = orders.filter(order => order.estadoPedido === 'ENTREGADO');
+    const completedOrders = orders.filter(order => order.estado === 'ENTREGADO');
     const totalRevenue = completedOrders.reduce((sum, order) => sum + order.total, 0);
     const averageOrderValue = completedOrders.length > 0 ? totalRevenue / completedOrders.length : 0;
 
     // Ingresos por mes (últimos 12 meses)
-    const revenueByMonth = generateMonthlyRevenue(orders, parseInt(timeRange));
+    const revenueByMonth = generateMonthlyRevenue(completedOrders, parseInt(timeRange));
     
     // Películas más vendidas
     const movieSales = {};
@@ -225,7 +227,7 @@ const AdminStats = () => {
     }
 
     orders.forEach(order => {
-      if (order.estadoPedido === 'ENTREGADO') {
+      if (order.estado === 'ENTREGADO') {
         const orderDate = new Date(order.fechaPedido);
         const monthIndex = monthlyData.findIndex(m => {
           const [monthName, year] = m.month.split(' ');
